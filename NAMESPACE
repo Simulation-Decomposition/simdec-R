@@ -3,6 +3,7 @@
 export(append_with_cat)
 export(bin_data_1D)
 export(bin_data_2D)
+export(build_simdec_chart)
 export(cat_transform)
 export(decomposition)
 export(magic_binning)
