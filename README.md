@@ -30,26 +30,35 @@ Function `significance` computes first-order effects `FOE` (main individual effe
 ```
 sig <- significance(output, inputs)
 SI  <- sig[[2]] # Saving SI as a separate for later use
-print(sig)
+FOE <- sig[[3]]
+SOE <- sig[[4]]
+print(SI)
+print(FOE)
+print(FOE)
 ```
 
 Here is the result it returns:
 
-$factor_names
-[1] "X1" "X2" "X3" "X4"
+SI =
 
-$SI
-[1] 0.04086515 0.51550451 0.09554875 0.35061248
+    0.0409
+    0.5155
+    0.0955
+    0.3506
 
-$FOE
-[1] 0.0366771 0.4910688 0.1068750 0.2777653
+FOE =
 
-$SOE
-     [,1]        [,2]         [,3]        [,4]
-[1,]    0 0.003428407  0.001484804 0.003462889
-[2,]    0 0.000000000 -0.060462825 0.105905875
-[3,]    0 0.000000000  0.000000000 0.036325580
-[4,]    0 0.000000000  0.000000000 0.000000000
+    0.0367
+    0.4910
+    0.1069
+    0.2777
+
+SOE =
+
+         0    0.0034    0.0015    0.0035
+         0         0   -0.0605    0.1059
+         0         0         0    0.0363
+         0         0         0         0
 
 
 Each value shows what portion of the variance of the output is explained (negative SOE values indicate correlation). In this example, SI shows that the most significant inputs are X2 (52%) and X4 (35%). SOE points out that there is interaction between X2 and X3 (11%) and correlation between X2 and X3 (-6%).
