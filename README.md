@@ -27,11 +27,11 @@ inputs    <- example_data[,2:5]
 ### Compute significance indices
 Function `significance` computes first-order effects `FOE` (main individual effect of every input variable), second-order effects `SOE` (interaction effects between pairs of variables and combined sensitivity indices `SI`. 
 
-```{r}
+```
 sig <- significance(output, inputs)
 SI  <- sig[[2]] # Saving SI as a separate for later use
 print(sig)
-```{r}
+```
 
 Here is the result it returns:
 
@@ -56,9 +56,9 @@ Each value shows what portion of the variance of the output is explained (negati
 
 Lets look at the sum of all the significance indices: 
 
-```{r}
+```
 print(sum(SI)
-```{r}
+```
 
 We get:
 
@@ -69,7 +69,7 @@ In total, 100% of the output variance is explained (the extra can be attributed 
 ### Run decomposition
 Function `decomposition` chooses the most important input variables, breaks them down into states, forms scenarios out of all combinations of those states and maps the scenarios onto the output values.
 
-```{r}
+```
 # Initialize decomposition
 dec_limit       <-  0.8 # cummulative significance threshold; % (used to decide how many variables to take for decomposition)
 threshold_type  <-  2   # 1 for 'percentile-based' (same amount of observations in each state), 2 for 'median-based' (equaly-spaced ranges)
@@ -83,7 +83,7 @@ scenario        <- dec[[1]]
 scenario_legend <- dec[[2]]
 var_names_dec   <- dec[[4]]
 print(dec)
-```{r}
+```
 
 And this returns: 
 
@@ -135,7 +135,7 @@ $var_names_dec
 ### Visualize
 The SimDec graph and the corresponding legend is created with the function `build_simdec_chart`.
 
-```{r}
+```
 # Initializing plot for tic aesthetics
 axistitle   <- c()
 main_colors <- c()
@@ -145,7 +145,7 @@ SimDec_Plot   <- visuals[[1]]
 Legdend_Table <- visuals[[2]]
 print(SimDec_Plot)
 print(Legend_Table
-```{r}
+```
 
 And this returns: 
 
