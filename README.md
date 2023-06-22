@@ -73,10 +73,7 @@ We get:
 
 sum(SI) =
 
-    0.0367
-    0.4910
-    0.1069
-    0.2777
+  1.0024
 
 In total, 100% of the output variance is explained (the extra can be attributed to noise).
 
