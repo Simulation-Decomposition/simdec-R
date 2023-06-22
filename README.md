@@ -69,7 +69,7 @@ Lets look at the sum of all the significance indices:
 print(sum(SI))
 ```
 
-We get:
+The result it returns:
 
 sum(SI) =
 
