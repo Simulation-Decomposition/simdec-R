@@ -66,12 +66,12 @@ Each value shows what portion of the variance of the output is explained (negati
 Lets look at the sum of all the significance indices: 
 
 ```
-print(sum(SI)
+print(sum(SI))
 ```
 
 We get:
 
-[1] 1.002531
+1.002531
 
 In total, 100% of the output variance is explained (the extra can be attributed to noise).
 
