@@ -18,11 +18,11 @@ Lets have a look at how it works in R!
 ### Load data 
 First the simulated `inputs` and the `output` need to be specified. They can result from a Monte Carlo simulation arranged directly in matlab, or conducted elsewhere and then loaded through a file, like in this example. Lets use the example data that will come with the R package.  
 
-```{r}
+```
 data(example_data)
 output    <- example_data[,1]
 inputs    <- example_data[,2:5] 
-```{r}
+```
 
 ### Compute significance indices
 Function `significance` computes first-order effects `FOE` (main individual effect of every input variable), second-order effects `SOE` (interaction effects between pairs of variables and combined sensitivity indices `SI`. 
