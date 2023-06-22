@@ -71,7 +71,7 @@ print(sum(SI))
 
 We get:
 
-1.002531
+sum(SI) = 1.002531
 
 In total, 100% of the output variance is explained (the extra can be attributed to noise).
 
