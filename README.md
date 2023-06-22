@@ -66,12 +66,13 @@ Each value shows what portion of the variance of the output is explained (negati
 Lets look at the sum of all the significance indices: 
 
 ```
+sum_SI <- sum(SI)
 print(sum(SI))
 ```
 
 The result it returns:
 
-sum(SI) =
+sum_SI =
 
   1.0024
 
