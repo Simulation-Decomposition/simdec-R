@@ -128,7 +128,7 @@ visuals     <- build_simdec_chart(output, scenario, scenario_legend,
 SimDec_Plot   <- visuals[[1]]
 Legdend_Table <- visuals[[2]]
 print(SimDec_Plot)
-print(Legend_Table
+print(Legend_Table)
 ```
 
 And this returns: 
