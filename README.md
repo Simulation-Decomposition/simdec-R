@@ -63,21 +63,6 @@ SOE =
 
 Each value shows what portion of the variance of the output is explained (negative SOE values indicate correlation). In this example, SI shows that the most significant inputs are X2 (52%) and X4 (35%). SOE points out that there is interaction between X2 and X3 (11%) and correlation between X2 and X3 (-6%).
 
-Lets look at the sum of all the significance indices: 
-
-```
-sum_SI <- sum(SI)
-print(sum(SI))
-```
-
-The result it returns:
-
-sum_SI =
-
-  1.0024
-
-In total, 100% of the output variance is explained (the extra can be attributed to noise).
-
 ### Run decomposition
 Function `decomposition` chooses the most important input variables, breaks them down into states, forms scenarios out of all combinations of those states and maps the scenarios onto the output values.
 
