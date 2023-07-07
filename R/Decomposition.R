@@ -46,177 +46,169 @@
 #'                     manual_thresholds = NULL,
 #'                     threshold_type = 2,
 #'                     var_names = colnames(inputs))
-build_simdec_chart <- function(output, scenario, scenario_legend, main_colors, axistitle, var_names_dec) {
-  # Separating result by scenario
-  result_dec <- vector("list", max(scenario))
+decomposition <- function(output, inputs, SI, dec_limit, manual_vars=NULL, manual_states=NULL, manual_thresholds=NULL, threshold_type=2, var_names) {
 
-  for (i in 1:max(scenario)) {
-    s <- length(output[scenario == i])
-    result_dec[[i]] <- matrix(output[scenario == i], nrow = s, ncol = 1)
-  }
+  # 1. Variables for decomposition
 
-  # Defining edges of bins
-  l <- min(output)
-  h <- max(output)
-  bins <- 100
-  edges <- seq(l, h, length.out = bins + 1)
-
-  # Define frequency of each scenario NPV for each bin
-  f <- matrix(0, nrow = max(scenario), ncol = 100)
-
-  for (i in 1:max(scenario)) {
-    f[i, ] <- hist(result_dec[[i]], breaks = edges, plot = FALSE)$counts
-  }
-  # Main colors
-  if (is.null(main_colors)) {
-    main_colors <- c("#00B0F0", "#E7D819", "#1FDF4D", "#ed4284", "#9054de")
-  }
-
-
-
-  N_main_colors <- max(scenario_legend[,2])
-  N_shades <- scenario_legend[nrow(scenario_legend),1] / N_main_colors
-  color <- matrix(NA, nrow = scenario_legend[nrow(scenario_legend),1], ncol = 3)
-
-
-  sc <- 1
-  if (N_shades >= 3) {
-    range <- 0.4
+  if (is.null(manual_vars)) {
+    SI_sorted <- sort(SI, decreasing = TRUE)
+    var_order <- order(SI, decreasing = TRUE)
+    N_var_dec <- which(cumsum(SI_sorted) > dec_limit)[1]
+    var_order[(N_var_dec + 1):length(var_order)] <- 0
   } else {
-    range <- 0.5
+    var_order <- rep(0, length(manual_vars))
+    for (i in 1:length(manual_vars)) {
+      if (manual_vars[i] > 0) {
+        var_order[manual_vars[i]] <- i
+      }
+    }
+    N_var_dec <- sum(var_order > 0)
   }
-  step <- range * 2 / (N_shades - 1)
-  beta <- seq(-range, range, by = step)
 
-  library(colorspace)
+  var_names_dec <- var_names[var_order[var_order != 0]]
 
-  for (m in 1:N_main_colors) {
-    current_main_color <- main_colors[m]
+  # 2. States formation
 
-    for (sh in 1:N_shades) {
-      color[sc, ] <- lighten(current_main_color, amount = (beta[sh]+sh*0.1))   # Made changes to differentiate between medium and light shades
-      sc <- sc + 1
+  N_var <- ncol(inputs)
+  if (is.null(manual_states) && is.null(manual_thresholds)) {
+    states <- rep(0, N_var)
+    if (N_var_dec < 3) {
+      states[1:N_var] <- 3
+    } else {
+      states[1:N_var] <- 2
+    }
+
+    for (f in 1:N_var) {
+      n_unique <- length(unique(inputs[, f]))
+      if (n_unique < 5) {
+        states[f] <- n_unique
+      }
+    }
+  } else {
+    # states <- ifelse(is.null(manual_states), 0, manual_states)
+    states <- manual_states
+  }
+
+
+
+  for (f in 1:N_var) {
+    if (f %in% var_order[var_order != 0]) {
+      next
+    } else {
+      states[f] <- 0
     }
   }
 
-  color_inv <- color[nrow(color):1, ]  # Created the color_inv matrix for the plot
+  # 3. Numeric thresholds
 
-  library(ggplot2)
-  library(gridExtra)
-  library(dplyr)
+  N_runs <- length(output)
 
-  # Create a data frame with the required data
-  df <- data.frame(x = 1:bins, t(f))
-
-
-  # Convert the data frame to long format using tidyr::pivot_longer
-  df_long <- tidyr::pivot_longer(df, cols = -x, names_to = "variable", values_to = "value")
-
-  # Plotting the histogram
-  h <- hist(output, breaks = bins, plot = FALSE)
-  xticks <- pretty(h$breaks, n = 10)
-
-  # Adjusting x-ticks
-  xtick_step <- xticks[2] - xticks[1]
-
-  if (max(h$breaks) > max(xticks)) {
-    xticks <- c(xticks, xticks[length(xticks)] + xtick_step)
+  if (is.null(manual_thresholds)) {
+    thresholds <- matrix(NA, max(states), N_var)
+    if (threshold_type == 1) {
+      for (f in 1:N_var) {
+        if (states[f] > 0) {
+          x <- inputs[, f]
+          x_sorted <- sort(x)
+          x_sorted <- c(x_sorted, x_sorted[length(x_sorted)] + 1)
+          min_threshold <- x_sorted[1]
+          state_size <- round(N_runs / states[f])
+          for (s in 1:(states[f] - 1)) {
+            thresholds[s, f] <- x_sorted[(state_size * s) + 1]
+          }
+          thresholds[states[f], f] <- max(x) + 1
+        }
+      }
+    } else {
+      for (f in 1:N_var) {
+        if (states[f] > 0) {
+          f_min <- min(inputs[, f])
+          f_max <- max(inputs[, f])
+          n_states <- states[f]
+          step <- (f_max - f_min) / n_states
+          for (s in 1:n_states) {
+            thresholds[s, f] <- f_min + step * s
+          }
+          thresholds[n_states, f] <- max(inputs[, f]) + 1
+        }
+      }
+    }
+  } else {
+    thresholds <- manual_thresholds[-1, ]
   }
 
-  if (min(h$breaks) < min(xticks)) {
-    xticks <- c(xticks[1] - xtick_step, xticks)
-  }
+  # 5. Scenario matrix
 
-  # Getting y-ticks
-  yticks <- pretty(seq(0, max(h$counts)), n = 10)
+  N_scen <- prod(states[states > 0])
+  Scen_matrix <- matrix(1, N_scen, N_var_dec + 1)
+  Scen_matrix[, 1] <- 1:N_scen
+  j <- N_scen
 
-  min_art <- (xticks[1] - min(output)) * bins / (max(output) - min(output))
-  max_art <- (xticks[length(xticks)] - max(output)) * bins / (max(output) - min(output)) + bins
-  distance_art <- max_art - min_art
-  xticks_art <- (xticks - xticks[1]) * distance_art / (xticks[length(xticks)] - xticks[1]) + min_art
-
-  total <- length(output)
-  yticks_art <- yticks / total
-  a <- ifelse(yticks_art %% 1 == 0 & yticks_art != 0,
-              paste0(formatC(yticks_art * 100, digits = 0, format = "f")),
-              paste0(formatC(yticks_art * 100, digits = 1, format = "f")))
-  new_yticks <- paste0(a, "%")
-
-  df_long$variable <- factor(df_long$variable, ordered = TRUE, levels = rev(colnames(df[,-1]))) # changed the order here
-
-
-  # Create the plot
-  b <- ggplot(df_long, aes(x = x, y = value, fill = variable)) +
-    geom_bar(stat = "identity", position = "stack", colour="black") +
-    scale_x_continuous(breaks = xticks_art, labels = xticks) +
-    scale_y_continuous(breaks = yticks, labels = new_yticks) +
-    xlab("Y") +
-    ylab("Probability") + scale_fill_manual(values = color_inv) +          # Used the color_inv matrix here for matching matlab
-    coord_cartesian(xlim = c(min(xticks_art), max(xticks_art))) +
-    theme(legend.position="none") +
-    labs(title = "SimDec Plot") +
-    theme(plot.title = element_text(hjust = 0.5))
-
-  # Load the required libraries
-  library(kableExtra)
-
-  # Create a data frame for the legend
-  legend_data <- as.data.frame(scenario_legend)
-  legend_data[,1] <- as.factor(legend_data[,1])
-  colnames(legend_data) <- c("Color", var_names_dec, "min(Y)", "mean(Y)", "max(Y)", "probability")
-  stats_y <- c("min(Y)", "mean(Y)", "max(Y)")
-
-
-  ### State Labels ###
-
-  # For loop to iterate over variable names
-  for (varname in var_names_dec) {
-    unique_values <- unique(legend_data[[varname]])
-
-    if (length(unique_values) == 2) {
-      if (1 %in% unique_values) {
-        legend_data[[varname]][legend_data[[varname]] == 1] <- "low"
-      }
-      if (2 %in% unique_values) {
-        legend_data[[varname]][legend_data[[varname]] == 2] <- "high"
-      }
-    } else if (length(unique_values) == 3) {
-      if (1 %in% unique_values) {
-        legend_data[[varname]][legend_data[[varname]] == 1] <- "low"
-      }
-      if (2 %in% unique_values) {
-        legend_data[[varname]][legend_data[[varname]] == 2] <- "medium"
-      }
-      if (3 %in% unique_values) {
-        legend_data[[varname]][legend_data[[varname]] == 3] <- "high"
+  for (v in 1:N_var_dec) {
+    ind_inf <- var_order[v]
+    j <- j / states[ind_inf]
+    s <- 1
+    for (row in 1:N_scen) {
+      Scen_matrix[row, v + 1] <- s
+      if (row %% j == 0) {
+        s <- s + 1
+        if (s > states[ind_inf]) {
+          s <- 1
+        }
       }
     }
   }
 
-  # Define the column name for merging and aligning cells NEW
-  merge_var <- var_names_dec[[1]]
 
-  # Merge the cells in the specified column NEW
-  legend_data[[merge_var]] <- ifelse(duplicated(legend_data[[merge_var]]), "", legend_data[[merge_var]])
+  states_matching <- matrix(0, N_runs, N_var_dec)
+  scenario_matching <- rep(0, N_runs)
 
-  legend_data <- legend_data %>% mutate(across(all_of(stats_y), ~ round(., digits = 0)))
+  for (i in 1:N_runs) {
+    for (v in 1:N_var_dec) {
+      ind_inf <- var_order[v]
+      for (s in 1:states[ind_inf]) {
+        if (inputs[i, ind_inf] < thresholds[s, ind_inf]) {
+          states_matching[i, v] <- s
+          break
+        }
+      }
+    }
 
-  # Displaying the percentage sign, and rounding the rows in the probability column
-  legend_data$probability <- paste0(round(legend_data$probability * 100), "%")
+    matching_indices <- which(apply(Scen_matrix[, 2:(N_var_dec + 1)], 1, function(x) all(x == states_matching[i, ])))
+    if (length(matching_indices) > 0) {
+      scenario_matching[i] <- matching_indices[1]
+    }
+  }
 
+  scenarios <- scenario_matching
 
-  #Use kableExtra to generate the table with styled cells
-  legend_table <- legend_data %>%
-    kable(escape = FALSE, format = "html", align = 'c') %>%
-    kable_styling(bootstrap_options = "striped", full_width = F, position = "center",font_size = 12) %>%
-    column_spec(1, color = "black", background = color[,1], width = "6em") %>%
-    collapse_rows(columns = 2, valign = "middle")
-  %>% column_spec(2, bold = TRUE) #NEW
+  # Adding min values to thresholds for export
 
+  if (is.null(manual_thresholds)) {
+    thresholds_out <- matrix(NA, max(states) + 1, N_var)
+    for (f in 1:N_var_dec) {
+      thresholds_out[1, var_order[f]] <- min(inputs[, var_order[f]])
+      th <- thresholds[states[var_order[f]], var_order[f]]
+      thresholds[states[var_order[f]], var_order[f]] <- th - 1
+    }
+    thresholds_out[2:(max(states) + 1), ] <- thresholds
+  } else {
+    thresholds_out <- thresholds
+  }
 
-  # Display the table
-  legend_table
+  # 7. Filling scenario legend
 
-  return(list(simdec_plot = b, legend_table = legend_table))
+  scen_legend <- cbind(Scen_matrix, matrix(NA, N_scen, 4))
+  for (sc in 1:N_scen) {
+    y <- output[scenarios == sc]
+    if (!is.null(y) && length(y) > 0) {
+      scen_legend[sc, (ncol(scen_legend) - 3)] <- min(y)
+      scen_legend[sc, (ncol(scen_legend) - 2)] <- mean(y)
+      scen_legend[sc, (ncol(scen_legend) - 1)] <- max(y)
+      scen_legend[sc, ncol(scen_legend)] <- length(y) / N_runs
+    }
+  }
+
+  return(list(scenarios = scenarios, scen_legend = scen_legend, thresholds_out = thresholds_out, var_names_dec = var_names_dec))
 }
 
