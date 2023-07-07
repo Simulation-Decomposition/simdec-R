@@ -183,21 +183,12 @@ build_simdec_chart <- function(output, scenario, scenario_legend, main_colors, a
     kable(escape = FALSE, format = "html", align = 'c') %>%
     kable_styling(bootstrap_options = "striped", full_width = F, position = "center",font_size = 12) %>%
     column_spec(1, color = "black", background = color[,1], width = "6em") %>%
-    collapse_rows(columns = 2, valign = "middle")
-  %>% column_spec(2, bold = TRUE) #NEW
-
-
+    collapse_rows(columns = 2, valign = "middle") %>% column_spec(2, bold = TRUE) #NEW
 
   # Display the table
   legend_table
 
-  # To display plot and legend together.
 
-  # # Create a table grob for the legend data
-  # legend_table <- tableGrob(legend_data, theme = ttheme_default(base_size = 5), rows = NULL)
-
-  # # Combine the plot and legend table using grid.arrange
-  # grid.arrange(b, legend_table, ncol = 2, widths = c(0.8, 0.5))
 
   return(list(simdec_plot = b, legend_table = legend_table))
 }
