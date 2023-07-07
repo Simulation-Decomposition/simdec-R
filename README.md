@@ -121,9 +121,11 @@ print(Legend_Table)
 
 And this returns: 
 
-![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/2cac4819-3c8c-42d6-904a-10a9b25a8c3a)
+![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/49cd157d-f4d3-4402-8dba-c444d4a108cf)
 
-![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/18fb8228-f605-4b41-84c4-9480d49365e3)
+
+![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/91ba105a-f57b-4ff0-93e1-094404bf8e1f)
+
 
 
 ### Customize
@@ -165,16 +167,18 @@ var_names_dec     <- dec[[4]]
 visuals           <- build_simdec_chart(output, scenario, scenario_legend,
                                         main_colors, axistitle, var_names_dec)
 SimDec_Plot   <- visuals[[1]]
-Legdend_Table <- visuals[[2]]
+Legend_Table <- visuals[[2]]
 print(SimDec_Plot)
 print(Legend_Table)
 ```
 
 And this returns: 
 
-![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/11c1597f-ba53-4aaa-95d3-7d17a9f95f28)
+![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/f2a834b2-0949-4234-bad4-b9235142bf18)
 
-![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/6e7bd190-9da4-4b2f-b72a-91b7557e2801)
+
+![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/4db4425d-39b3-47b6-a1b6-546dfce07e09)
+
 
 ## Code structure
 Each block in Figure below is a matlab function. The green ones are higher-level functions that are called in the main script (i.e. example above).
