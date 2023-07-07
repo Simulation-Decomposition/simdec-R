@@ -88,7 +88,7 @@ scenario        <- dec[[1]]
 scenario_legend <- dec[[2]]
 var_names_dec   <- dec[[4]]
 print(SI)
-print(secnario_legend)
+print(scenario_legend)
 print(var_names_dec)
 ```
 
@@ -122,7 +122,7 @@ main_colors <- c()
 visuals     <- build_simdec_chart(output, scenario, scenario_legend,
                                   main_colors, axistitle, var_names_dec)
 SimDec_Plot   <- visuals[[1]]
-Legdend_Table <- visuals[[2]]
+Legend_Table <- visuals[[2]]
 print(SimDec_Plot)
 print(Legend_Table)
 ```
