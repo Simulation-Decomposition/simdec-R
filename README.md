@@ -15,9 +15,13 @@ three major parts:
 
 SimDec reveals the nature of causalities and interaction effects in the model. Lets have a look at how it works in R!
 ### Installing the package from Github
+
+```
+# install.packages("devtools")
 library(devtools)
 install_github("Simulation-Decomposition/simdec-R")
 library(Simdec)
+```
 
 ### Load data 
 First the simulated `inputs` and the `output` need to be specified. They can result from a Monte Carlo simulation arranged directly in matlab, or conducted elsewhere and then loaded through a file, like in this example. Lets use the example data that will come with the R package.  
