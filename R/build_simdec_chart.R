@@ -130,39 +130,74 @@ build_simdec_chart <- function(output, scenario, scenario_legend, main_colors, a
     labs(title = "SimDec Plot") +
     theme(plot.title = element_text(hjust = 0.5))
 
-  # Create a data frame for the legend
-  legend_data <- as.data.frame(scenario_legend)
-  legend_data[,1] <- as.factor(legend_data[,1])
-  colnames(legend_data) <- c("Color", var_names_dec, "min(Y)", "mean(Y)", "max(Y)", "Probability")
-
-  # Create a table for the legend data
-  legend_table <- tableGrob(legend_data, theme = ttheme_default(base_size = 5), rows = NULL)
-
-  # Combine the plot and legend table using grid.arrange
-  grid.arrange(b, legend_table, ncol = 2, widths = c(0.8, 0.5))
-
   # Load the required libraries
   library(kableExtra)
 
-  legend_data <- data.frame(color[,1], scenario_legend)
-  colnames(legend_data) <- c("color", "scenario", var_names_dec, "min(Y)", "mean(Y)", "max(Y)", "probability")
-  legend_data$Styled_Cell <- paste0("<span style='background-color:", df$color, "; display: inline-block; padding: 4px;'>", df$scenario, "</span>")
-  legend_data <- legend_data %>% dplyr::relocate(Styled_Cell)
+  # Create a data frame for the legend
+  legend_data <- as.data.frame(scenario_legend)
+  legend_data[,1] <- as.factor(legend_data[,1])
+  colnames(legend_data) <- c("Color", var_names_dec, "min(Y)", "mean(Y)", "max(Y)", "probability")
+  stats_y <- c("min(Y)", "mean(Y)", "max(Y)")
 
-  # Use kableExtra to generate the table with styled cells
+
+  ### State Labels ###
+
+  # For loop to iterate over variable names
+  for (varname in var_names_dec) {
+    unique_values <- unique(legend_data[[varname]])
+
+    if (length(unique_values) == 2) {
+      if (1 %in% unique_values) {
+        legend_data[[varname]][legend_data[[varname]] == 1] <- "low"
+      }
+      if (2 %in% unique_values) {
+        legend_data[[varname]][legend_data[[varname]] == 2] <- "high"
+      }
+    } else if (length(unique_values) == 3) {
+      if (1 %in% unique_values) {
+        legend_data[[varname]][legend_data[[varname]] == 1] <- "low"
+      }
+      if (2 %in% unique_values) {
+        legend_data[[varname]][legend_data[[varname]] == 2] <- "medium"
+      }
+      if (3 %in% unique_values) {
+        legend_data[[varname]][legend_data[[varname]] == 3] <- "high"
+      }
+    }
+  }
+
+  # Define the column name for merging and aligning cells NEW
+  merge_var <- var_names_dec[[1]]
+
+  # Merge the cells in the specified column NEW
+  legend_data[[merge_var]] <- ifelse(duplicated(legend_data[[merge_var]]), "", legend_data[[merge_var]])
+
+  legend_data <- legend_data %>% mutate(across(all_of(stats_y), ~ round(., digits = 0)))
+
+  # Displaying the percentage sign, and rounding the rows in the probability column
+  legend_data$probability <- paste0(round(legend_data$probability * 100), "%")
+
+
+  #Use kableExtra to generate the table with styled cells
   legend_table <- legend_data %>%
-    mutate(Styled_Cell = cell_spec(scenario,
-                                   color = "black",
-                                   background = color,
-                                   format = "html",
-                                   escape = FALSE)) %>%
-    select(-color, -scenario) %>%
-    rename(color = Styled_Cell) %>%
-    kable(escape = FALSE, format = "html") %>%
-    kable_styling(full_width = FALSE)
+    kable(escape = FALSE, format = "html", align = 'c') %>%
+    kable_styling(bootstrap_options = "striped", full_width = F, position = "center",font_size = 12) %>%
+    column_spec(1, color = "black", background = color[,1], width = "6em") %>%
+    collapse_rows(columns = 2, valign = "middle")
+  %>% column_spec(2, bold = TRUE) #NEW
+
+
 
   # Display the table
   legend_table
+
+  # To display plot and legend together.
+
+  # # Create a table grob for the legend data
+  # legend_table <- tableGrob(legend_data, theme = ttheme_default(base_size = 5), rows = NULL)
+
+  # # Combine the plot and legend table using grid.arrange
+  # grid.arrange(b, legend_table, ncol = 2, widths = c(0.8, 0.5))
 
   return(list(simdec_plot = b, legend_table = legend_table))
 }
