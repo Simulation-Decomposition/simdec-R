@@ -174,7 +174,7 @@ decomposition <- function(output, inputs, SI, dec_limit, manual_vars=NULL, manua
       }
     }
 
-    matching_indices <- which(apply(Scen_matrix[, 2:(N_var_dec + 1)], 1, function(x) all(x == states_matching[i, ])))
+    matching_indices <- which(apply(as.matrix(Scen_matrix[, 2:(N_var_dec + 1)]), 1, function(x) all(x == states_matching[i, ])))
     if (length(matching_indices) > 0) {
       scenario_matching[i] <- matching_indices[1]
     }

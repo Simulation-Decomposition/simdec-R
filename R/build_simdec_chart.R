@@ -59,7 +59,13 @@ build_simdec_chart <- function(output, scenario, scenario_legend, main_colors, a
     range <- 0.5
   }
   step <- range * 2 / (N_shades - 1)
-  beta <- seq(-range, range, by = step)
+  if (N_shades == 1) {
+    step <- 0.5
+    beta <- -range + step
+  } else {
+    step <- range * 2 / (N_shades - 1)
+    beta <- seq(-range, range, by = step)
+  }
 
   library(colorspace)
 
