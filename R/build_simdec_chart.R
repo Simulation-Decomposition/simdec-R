@@ -196,5 +196,5 @@ build_simdec_chart <- function(output, scenario, scenario_legend, main_colors, a
 
 
 
-  return(list(simdec_plot = b, legend_table = legend_table))
+  return(list(simdec_plot = b, legend_table = legend_table, legend_data = legend_data))
 }
