@@ -1,4 +1,4 @@
-#' build_simdec_chart -
+#' simdec_visualization -
 #'
 #' function visually represents results.
 #'
@@ -18,8 +18,8 @@
 #' @export
 #'
 #' @examples
-#' BSC <- build_simdec_chart(output, scenario, scenario_legend, main_colors, axistitle, var_names_dec)
-build_simdec_chart <- function(output, scenario, scenario_legend, main_colors, axistitle, var_names_dec) {
+#' BSC <- simdec_visualization(output, scenario, scenario_legend, main_colors, axistitle, var_names_dec)
+simdec_visualization <- function(output, scenario, scenario_legend, main_colors, axistitle, var_names_dec) {
   # Separating result by scenario
   result_dec <- vector("list", max(scenario))
 
