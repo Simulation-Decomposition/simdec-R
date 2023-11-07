@@ -80,7 +80,7 @@ Function `decomposition` chooses the most important input variables, breaks them
 ```
 # Initialize decomposition
 dec_limit       <-  0.8 # cummulative significance threshold; % (used to decide how many variables to take for decomposition)
-threshold_type  <-  2   # 1 for 'percentile-based' (same amount of observations in each state), 2 for 'median-based' (equaly-spaced ranges)
+threshold_type  <-  2   # 1 for 'percentile-based' (same amount of observations in each state), 2 for 'interval-based' (equaly-spaced ranges)
 output_name     <-  colnames(example_data[,1])
 var_names       <-  colnames(inputs)
 dec             <-  decomposition(output, inputs, SI, dec_limit = 0.8,
