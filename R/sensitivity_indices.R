@@ -352,9 +352,9 @@ bin_data_2D <- function(Xi, Xj, Y, n_bins_default) {
   return(list(bin_avg_ij_string, bin_count_ij_string, bin_avg_i, bin_count_i, bin_avg_j, bin_count_j))
 }
 
-#' significance -
+#' sensitivity_indices -
 #'
-#' significance calculates how much variability of the output is explained by inputs.
+#' sensitivity_indices calculates how much variability of the output is explained by inputs.
 #' It uses the the number_of_bins, bin_data_1D, bin_data_2D  and magic_binning functions.
 #'
 #' @param output A vector containing the target variable (Y).
@@ -372,9 +372,9 @@ bin_data_2D <- function(Xi, Xj, Y, n_bins_default) {
 #'                  X2 <- c(4,9,8,7,6,17,6,7,8,3))
 #' output <- df[,1]
 #' inputs <- df[,2:3]
-#' S      <- significance(output, inputs)
-significance <- function(output, inputs) {
-  # significance calculates how much variability of the output is explained by inputs
+#' S      <- sensitivity_indices(output, inputs)
+sensitivity_indices <- function(output, inputs) {
+  # sensitivity_indices calculates how much variability of the output is explained by inputs
   #
   # Uses functions number_of_bins, bin_data, magic_binning.
 
