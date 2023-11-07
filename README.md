@@ -116,15 +116,15 @@ var_names_dec
     "X2" "X4"
 
 ### Visualize
-The SimDec graph and the corresponding legend is created with the function `build_simdec_chart`.
+The SimDec graph and the corresponding legend is created with the function `simdec_visualization`.
 
 ```
 # Initializing plot for automatic aesthetics
 axistitle   <- c()
 main_colors <- c()
-visuals     <- build_simdec_chart(output, scenario, scenario_legend,
+visuals     <- simdec_visualization(output, scenario, scenario_legend,
                                   main_colors, axistitle, var_names_dec)
-SimDec_Plot   <- visuals[[1]]
+SimDec_Plot  <- visuals[[1]]
 Legend_Table <- visuals[[2]]
 print(SimDec_Plot)
 print(Legend_Table)
@@ -175,7 +175,7 @@ dec               <-  decomposition(output, inputs, SI, dec_limit = 0.8,
 scenario          <- dec[[1]]
 scenario_legend   <- dec[[2]]
 var_names_dec     <- dec[[4]]
-visuals           <- build_simdec_chart(output, scenario, scenario_legend,
+visuals           <- simdec_visualization(output, scenario, scenario_legend,
                                         main_colors, axistitle, var_names_dec)
 SimDec_Plot   <- visuals[[1]]
 Legend_Table <- visuals[[2]]
