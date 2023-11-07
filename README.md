@@ -12,7 +12,7 @@ When public
 analysis method, which is based on Monte Carlo simulation. SimDec consists of
 three major parts:
 
-1. computing significance indices,
+1. computing sensitivity indices,
 2. creating multi-variable scenarios and mapping the output values to them, and
 3. visualizing the scenarios on the output distribution by color-coding its segments.
 
@@ -35,11 +35,11 @@ output    <- example_data[,1]
 inputs    <- example_data[,2:5] 
 ```
 
-### Compute significance indices
-Function `significance` computes first-order effects `FOE` (main individual effect of every input variable), second-order effects `SOE` (interaction effects between pairs of variables and combined sensitivity indices `SI`. 
+### Compute sensitivity indices
+Function `sensitivity_indices` computes first-order effects `FOE` (main individual effect of every input variable), second-order effects `SOE` (interaction effects between pairs of variables and combined sensitivity indices `SI`. 
 
 ```
-sig <- significance(output, inputs)
+sig <- sensitivity_indices(output, inputs)
 SI  <- sig[[2]] # Saving SI as a separate for later use
 FOE <- sig[[3]]
 SOE <- sig[[4]]
@@ -79,7 +79,7 @@ Function `decomposition` chooses the most important input variables, breaks them
 
 ```
 # Initialize decomposition
-dec_limit       <-  0.8 # cummulative significance threshold; % (used to decide how many variables to take for decomposition)
+dec_limit       <-  0.8 # cummulative sensitivity threshold; % (used to decide how many variables to take for decomposition)
 threshold_type  <-  2   # 1 for 'percentile-based' (same amount of observations in each state), 2 for 'interval-based' (equaly-spaced ranges)
 output_name     <-  colnames(example_data[,1])
 var_names       <-  colnames(inputs)
@@ -164,7 +164,7 @@ manual_thresholds <- matrix(c(NA, min(inputs[,2]), min(inputs[,3]), NA,
                               ncol = length(manual_vars),
                               byrow = TRUE)  # Specify numeric thresholds for every state # Size: (max(manual_states)+1, N_inputs)
 main_colors       <- c('#8c5eff', '#ffe252', '#0dd189')
-sig               <- significance(output, inputs)
+sig               <- sensitivity_indices(output, inputs)
 SI                <- sig[[2]] 
 dec               <-  decomposition(output, inputs, SI, dec_limit = 0.8,
                                     manual_vars = manual_vars,
