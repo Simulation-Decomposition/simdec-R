@@ -20,7 +20,7 @@
 #'                                    NA, 5,  0, NA,
 #'                                    NA, 7, NA, NA, byrow = TRUE)
 #' @param threshold_type     - 1 for 'precentile-based' (same amount of observations in each state),
-#'                             2 for 'median-based' (equaly-spaced ranges of states)
+#'                             2 for 'interval-based' (equaly-spaced ranges of states)
 #' @param var_names          - names of input variables
 #'
 #' @return scenarios         - an array of the same size as Y with scenario indices
