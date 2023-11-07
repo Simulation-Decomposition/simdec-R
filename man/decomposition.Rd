@@ -42,7 +42,7 @@ matrix(NA, 3, -1, NA,
        NA, 7, NA, NA, byrow = TRUE)}
 
 \item{threshold_type}{- 1 for 'precentile-based' (same amount of observations in each state),
-2 for 'median-based' (equaly-spaced ranges of states)}
+2 for 'interval-based' (equaly-spaced ranges of states)}
 
 \item{var_names}{- names of input variables}
 }
