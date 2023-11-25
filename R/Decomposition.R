@@ -5,29 +5,30 @@
 #' @param output             - a vector of the target variable (Y)
 #' @param inputs             - a matrix of input variables
 #' @param SI                 - sensitivity indices
-#' @param dec_limit          - threshold of cumulative significance for selection
+#' @param decomposition_limit- threshold of cumulative significance for selection
 #'                             of input variables for decomposition
-#' @param manual_vars        - (optional) for custom decomposition specify the order
+#' @param order_of_variables - (optional) for custom decomposition specify the order
 #'                             of variables for decomposition, use zero to exclude.
 #'                             For example, if 4 input variables, third and second
 #'                             are desired for decomposition, then
-#'                             manual_vars <- c(0 2 1 0).
-#' @param manual_states      - (optional) the number of states for each input
+#'                             order_of_variables <- c(0 2 1 0).
+#' @param number_of_states      - (optional) the number of states for each input
 #'                             variable, i.e. c(0 3 2 0)
-#' @param manual_thresholds  - manual_thresholds - [optional] maximums (numeric thresholds)
+#' @param state_boundaries   - state_boundaries - [optional] maximums (numeric thresholds)
 #'                             of every state, leave the rest as NA, e.g.
 #'                             matrix(NA, 3, -1, NA,
 #'                                    NA, 5,  0, NA,
 #'                                    NA, 7, NA, NA, byrow = TRUE)
-#' @param threshold_type     - 1 for 'precentile-based' (same amount of observations in each state),
+#' @param boundary_type      - 1 for 'precentile-based' (same amount of observations in each state),
 #'                             2 for 'interval-based' (equaly-spaced ranges of states)
-#' @param var_names          - names of input variables
+#' @param input_names        - names of the input variables in the order of their appearance
+#'                             in the original dataset. Default value {X1, X2, X3...}.
 #'
 #' @return scenarios         - an array of the same size as Y with scenario indices
 #'                             for every simulation run.
 #' @return scen_legend       - a scenario table that shows which states of which
 #'                             variables compose different sceanrios
-#' @return thresholds_out    - thresholds of states of input variables
+#' @return boundaries_out    - numeric boundaries of states of input variables
 #' @return var_names_dec     - a cell array with sorted input variables' names
 #' @export
 #'
@@ -40,37 +41,37 @@
 #' S      <- significance(output, inputs)
 #' SI     <- s[[2]]
 #' DE <- decomposition(output, inputs, SI,
-#'                     dec_limit = 0.8,
-#'                     manual_vars = NULL,
-#'                     manual_states = NULL,
-#'                     manual_thresholds = NULL,
-#'                     threshold_type = 2,
-#'                     var_names = colnames(inputs))
-decomposition <- function(output, inputs, SI, dec_limit, manual_vars=NULL, manual_states=NULL, manual_thresholds=NULL, threshold_type=2, var_names) {
+#'                     decomposition_limit = 0.8,
+#'                     order_of_variables = NULL,
+#'                     number_of_states = NULL,
+#'                     state_boundaries = NULL,
+#'                     boundary_type = 2,
+#'                     input_names = colnames(inputs))
+decomposition <- function(output, inputs, SI, decomposition_limit, order_of_variables=NULL, number_of_states=NULL, state_boundaries=NULL, boundary_type=2, input_names) {
 
   # 1. Variables for decomposition
 
-  if (is.null(manual_vars)) {
+  if (is.null(order_of_variables)) {
     SI_sorted <- sort(SI, decreasing = TRUE)
     var_order <- order(SI, decreasing = TRUE)
-    N_var_dec <- which(cumsum(SI_sorted) > dec_limit)[1]
+    N_var_dec <- which(cumsum(SI_sorted) > decomposition_limit)[1]
     var_order[(N_var_dec + 1):length(var_order)] <- 0
   } else {
-    var_order <- rep(0, length(manual_vars))
-    for (i in 1:length(manual_vars)) {
-      if (manual_vars[i] > 0) {
-        var_order[manual_vars[i]] <- i
+    var_order <- rep(0, length(order_of_variables))
+    for (i in 1:length(order_of_variables)) {
+      if (order_of_variables[i] > 0) {
+        var_order[order_of_variables[i]] <- i
       }
     }
     N_var_dec <- sum(var_order > 0)
   }
 
-  var_names_dec <- var_names[var_order[var_order != 0]]
+  var_names_dec <- input_names[var_order[var_order != 0]]
 
   # 2. States formation
 
   N_var <- ncol(inputs)
-  if (is.null(manual_states) && is.null(manual_thresholds)) {
+  if (is.null(number_of_states) && is.null(state_boundaries)) {
     states <- rep(0, N_var)
     if (N_var_dec < 3) {
       states[1:N_var] <- 3
@@ -85,8 +86,8 @@ decomposition <- function(output, inputs, SI, dec_limit, manual_vars=NULL, manua
       }
     }
   } else {
-    # states <- ifelse(is.null(manual_states), 0, manual_states)
-    states <- manual_states
+    # states <- ifelse(is.null(number_of_states), 0, number_of_states)
+    states <- number_of_states
   }
 
 
@@ -103,9 +104,9 @@ decomposition <- function(output, inputs, SI, dec_limit, manual_vars=NULL, manua
 
   N_runs <- length(output)
 
-  if (is.null(manual_thresholds)) {
+  if (is.null(state_boundaries)) {
     thresholds <- matrix(NA, max(states), N_var)
-    if (threshold_type == 1) {
+    if (boundary_type == 1) {
       for (f in 1:N_var) {
         if (states[f] > 0) {
           x <- inputs[, f]
@@ -134,7 +135,7 @@ decomposition <- function(output, inputs, SI, dec_limit, manual_vars=NULL, manua
       }
     }
   } else {
-    thresholds <- manual_thresholds[-1, ]
+    thresholds <- state_boundaries[-1, ]
   }
 
   # 5. Scenario matrix
@@ -184,16 +185,16 @@ decomposition <- function(output, inputs, SI, dec_limit, manual_vars=NULL, manua
 
   # Adding min values to thresholds for export
 
-  if (is.null(manual_thresholds)) {
-    thresholds_out <- matrix(NA, max(states) + 1, N_var)
+  if (is.null(state_boundaries)) {
+    boundaries_out <- matrix(NA, max(states) + 1, N_var)
     for (f in 1:N_var_dec) {
-      thresholds_out[1, var_order[f]] <- min(inputs[, var_order[f]])
+      boundaries_out[1, var_order[f]] <- min(inputs[, var_order[f]])
       th <- thresholds[states[var_order[f]], var_order[f]]
       thresholds[states[var_order[f]], var_order[f]] <- th - 1
     }
-    thresholds_out[2:(max(states) + 1), ] <- thresholds
+    boundaries_out[2:(max(states) + 1), ] <- thresholds
   } else {
-    thresholds_out <- thresholds
+    boundaries_out <- thresholds
   }
 
   # 7. Filling scenario legend
@@ -209,6 +210,6 @@ decomposition <- function(output, inputs, SI, dec_limit, manual_vars=NULL, manua
     }
   }
 
-  return(list(scenarios = scenarios, scen_legend = scen_legend, thresholds_out = thresholds_out, var_names_dec = var_names_dec))
+  return(list(scenarios = scenarios, scen_legend = scen_legend, boundaries_out = boundaries_out, var_names_dec = var_names_dec))
 }
 
