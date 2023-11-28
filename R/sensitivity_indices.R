@@ -2,7 +2,7 @@
 #'
 #'  Transforms categorical variable into numeric, by assigning indices in
 #'  accordance with average Y values in each category.
-#'
+#' @keywords internal
 #' @param Y - a vector of Y (target) values
 #' @param X - a vector of X values
 #'
@@ -10,8 +10,7 @@
 #'
 #' @return indexMap - an array of the same size as X with assigned numeric
 #'                    indices corresponding to original categorical values
-#'
-#' @export
+#' @noRd
 #'
 #' @examples -
 #'
@@ -49,14 +48,14 @@ cat_transform <- function(Y, X) {
 #'
 #' Appends numeric inputs with categorical variables which are transformed into numeric ones.
 #'
+#' @keywords internal
 #' @param output           - a vector of Y (target) values
 #' @param numeric_inputs   - a matrix of X values - i.e., all numeric inputs
 #' @param string_data      - all non-numeric columns in the data set
 #'
 #' @return all_inputs      - a matrix containing all numeric and all transformed input variables
 #' @return sorted_X        - the order of categories in increasing average Y for each non-numeric input variables
-#'
-#' @export
+#' @noRd
 #'
 #' @examples
 #'
@@ -104,13 +103,13 @@ append_with_cat <- function(output, numeric_inputs, string_data) {
 #' number_of_bins defines the optimal number of bins for first-order and
 #' second-order significance indices calculation.
 #'
+#' @keywords internal
 #' @param N_runs    - the total number of observations
 #' @param N_factors - number of inputs variables
 #'
 #' @return N_bins_foe - number of bins for first-order effect calculation
 #' @return N_bins_soe - number of bins for second-order effect calculation
-#'
-#' @export
+#' @noRd
 #'
 #' @examples
 #'
@@ -139,12 +138,12 @@ number_of_bins <- function(N_runs, N_factors) {
 #'
 #' a function that calculates weighted variance.
 #'
+#' @keywords internal
 #' @param x       - a numeric vector
 #' @param weights - a vector of weights
 #'
 #' @return weighted variance
-#' @export
-#'
+#' @noRd
 #' @examples
 #'
 #' X       <- c(10, 20, 30, 15, 8, 40, 60, 10, 17, 4)
@@ -176,13 +175,13 @@ weighted_variance <- function(x, weights) {
 #' 2. The same values of X should be allocated to a single bin.
 #' 3. NA values should get the 0 bin index.
 #'
+#' @keywords internal
 #' @param X               - a numeric vector of values
 #' @param n_bins_default  - default number of bins
 #'
 #' @return bin_idx         - an array with bin indices of the same length as X
 #' @return n_bins_out      - resulting number of bins (might be less than default if many NaNs or same values)
-#' @export
-#'
+#' @noRd
 #' @examples
 #' X <- c(NA, NA, 6, 6, 6, 6, 6, 6, 100, 200, 2, 1)
 #' n_bins_default = 6
@@ -249,14 +248,14 @@ magic_binning <- function(X, n_bins_default) {
 #'
 #' bin_data_1D computes averages and counts of Y in bins of X. It uses the magic_binning function.
 #'
+#' @keywords internal
 #' @param X              - a vector of X values
 #' @param Y              - a vector of Y values
 #' @param n_bins_default - default number of bins
 #'
 #' @return bin_avg       - averages of Y values in bins of X
 #' @return bin_count     - number of Y values in bins of X
-#' @export
-#'
+#' @noRd
 #' @examples
 #'
 #' X              <- c(10, 20, 30, 15, 8, 40, 60, 10, 17, 4)
@@ -286,6 +285,7 @@ bin_data_1D <- function(X, Y, n_bins_default) {
 #'
 #' bin_data_2D computes averages and counts of Y in bins of XiXj, Xi, and Xj. The function uses the magic_binning function.
 #'
+#' @keywords internal
 #' @param Xi                    - a vector of Xi values
 #' @param Xj                    - a vector of Xj values
 #' @param Y                     - a vector of Y values
@@ -297,8 +297,7 @@ bin_data_1D <- function(X, Y, n_bins_default) {
 #' @return bin_count_i          - an array of corresponding count of Y values
 #' @return bin_avg_j            - an array of average Y values in 1D bins of Xj
 #' @return bin_count_j          - an array of corresponding count of Y values
-#'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' df <- data.frame(Y  <- c(167, 82, 75, 134, 186, 51, 17, 167, 86, 198),
@@ -357,8 +356,8 @@ bin_data_2D <- function(Xi, Xj, Y, n_bins_default) {
 #' sensitivity_indices calculates how much variability of the output is explained by inputs.
 #' It uses the the number_of_bins, bin_data_1D, bin_data_2D  and magic_binning functions.
 #'
-#' @param output A vector containing the target variable (Y).
-#' @param inputs All input variables.
+#' @param output An array containing the target variable (Y).
+#' @param inputs A two dimensional array of input variables (Xs).
 #'
 #' @return FOE - first-order effects (also called 'main' or 'individual' effects).
 #' @return SOE - second-order effects (also called 'interaction' effects).
@@ -367,12 +366,16 @@ bin_data_2D <- function(Xi, Xj, Y, n_bins_default) {
 #' @export
 #'
 #' @examples
-#' df <- data.frame(Y  <- c(167, 82, 75, 134, 186, 51, 17, 167, 86, 198),
-#'                  X1 <- c(10, 20, 30, 15, 8, 40, 60, 10, 17, 4),
-#'                  X2 <- c(4,9,8,7,6,17,6,7,8,3))
-#' output <- df[,1]
-#' inputs <- df[,2:3]
+#'
+#' library(Simdec)
+#' data(example_data)
+#' output                    <- example_data[,1]
+#' inputs                    <- example_data[,2:5]
+#'
+#' # Calculating sensitivity indices
+#'
 #' S      <- sensitivity_indices(output, inputs)
+#'
 sensitivity_indices <- function(output, inputs) {
   # sensitivity_indices calculates how much variability of the output is explained by inputs
   #

@@ -7,9 +7,9 @@
 sensitivity_indices(output, inputs)
 }
 \arguments{
-\item{output}{A vector containing the target variable (Y).}
+\item{output}{An array containing the target variable (Y).}
 
-\item{inputs}{All input variables.}
+\item{inputs}{A two dimensional array of input variables (Xs).}
 }
 \value{
 FOE - first-order effects (also called 'main' or 'individual' effects).
@@ -23,10 +23,14 @@ sensitivity_indices calculates how much variability of the output is explained b
 It uses the the number_of_bins, bin_data_1D, bin_data_2D  and magic_binning functions.
 }
 \examples{
-df <- data.frame(Y  <- c(167, 82, 75, 134, 186, 51, 17, 167, 86, 198),
-                 X1 <- c(10, 20, 30, 15, 8, 40, 60, 10, 17, 4),
-                 X2 <- c(4,9,8,7,6,17,6,7,8,3))
-output <- df[,1]
-inputs <- df[,2:3]
+
+library(Simdec)
+data(example_data)
+output                    <- example_data[,1]
+inputs                    <- example_data[,2:5]
+
+# Calculating sensitivity indices
+
 S      <- sensitivity_indices(output, inputs)
+
 }

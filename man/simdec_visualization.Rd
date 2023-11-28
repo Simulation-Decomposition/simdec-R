@@ -6,38 +6,105 @@
 \usage{
 simdec_visualization(
   output,
-  scenario,
-  scenario_legend,
-  main_colors,
-  axistitle,
-  var_names_dec
+  input,
+  SI,
+  decomposition_limit = 0.8 * (sum(SI)),
+  order_of_variables = NULL,
+  number_of_states = NULL,
+  state_boundaries = NULL,
+  boundary_type = 2,
+  input_names = NULL,
+  main_colors = NULL,
+  axistitle = NULL
 )
 }
 \arguments{
-\item{output}{- an array of Y values}
+\item{output}{- an array of Y values.}
 
-\item{scenario}{- an array of associated scenario indices}
+\item{SI}{- sensitivity indices.}
 
-\item{scenario_legend}{- a scenario table that shows which states of which
-variables compose different scenarios}
+\item{decomposition_limit}{- (optional) threshold of cumulative importance (sum(SI))
+for selection of input variables for decomposition.}
+
+\item{order_of_variables}{- (optional) for custom decomposition specify the order
+of variables for decomposition, use zero to exclude.
+For example, if there are 4 input variables, and third
+and second are desired for decomposition, then specify
+order_of_variable as c(0,2,1,0).}
+
+\item{number_of_states}{- (optional) the number of states for each input variable,
+e.g., c(0,3,2,0).}
+
+\item{state_boundaries}{- (optional) maximums (numeric boundaries) of every state, leave
+rest as NAs, e.g.,
+matrix(NA, 3, -1, NA,
+       NA, 5,  0, NA,
+       NA, 7, NA, NA,
+       byrow = TRUE)}
+
+\item{boundary_type}{- (optional) 1 for 'precentile-based' (same amount of observations
+in each state), 2 (default) for 'interval-based' (equaly-spaced
+ranges of states).}
+
+\item{input_names}{- (optional) names of the input variables in the order of
+their appearance in the original data set.}
 
 \item{main_colors}{- (optional) hex values of the main colors, should be as many as the
 states for the first in decomposition (or the most
 influential input variable). For example,
 main_colors <- c('#00B0F0', '#1FDF4D', '#1FDF4D')}
 
-\item{axistitle}{- a title for the x axis.}
+\item{inputs}{- a two dimensional array of input variables (Xs).}
 
-\item{var_names_dec}{- cell array with names for variables for decomposition}
+\item{axis_title}{- (optional) a title for the x axis.}
 }
 \value{
-simdec_plot     - a stacked histogram
+scenarios          - an array of the same size as Y with scenario indices
+                             for every simulation run
 
-legend_table    - a table of legends
+scen_legend        - a scenario table that shows which states of which
+                             variables compose different scenarios
+
+boundaries_out     - numeric boundaries of states of input variables
+
+simdec_plot        - a stacked histogram (visualization)
+
+legend_table       - a table of legends
 }
 \description{
-function visually represents results.
+builds SimDec visualization using data decomposition
 }
 \examples{
-BSC <- simdec_visualization(output, scenario, scenario_legend, main_colors, axistitle, var_names_dec)
+library(Simdec)
+data(example_data)
+output                    <- example_data[,1]
+inputs                    <- example_data[,2:5]
+
+# For automatic decomposition and visualization
+
+auto                      <- simdec_visualization(output, inputs, SI
+vis_auto                  <- auto$simdec_plot
+legend_auto               <- auto$legend_table
+
+# For manual decomposition and visualization
+
+order_of_variables_m      <- c(0, 2, 1, 0)
+number_of_states_m        <- c(0, 3, 2, 0)
+state_boundaries_m        <- matrix(c(NA, min(inputs[,2]), min(inputs[,3]), NA,
+                                      NA, 100, 657.5, NA,
+                                      NA, 650, max(inputs[,3]), NA,
+                                      NA, max(inputs[,2]), NA, NA),
+                                      nrow = max(number_of_states)+1,
+                                      ncol = length(order_of_variables),
+                                      byrow = TRUE)
+main_colors_m             <- c('#8c5eff', '#ffe252', '#0dd189')
+
+manual                    <- simdec_visualization(output, inputs, SI,
+                                                  order_of_variables = order_of_variables_m,
+                                                  number_of_sattes   = number_of_states_m,
+                                                  state_boundaries   = state_boundaries_m,
+                                                  main_colors        = main_colors_m)
+vis_manual                <- manual$simdec_plot
+legend_manual             <- manual$legend_table
+
 }
