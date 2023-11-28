@@ -30,22 +30,22 @@ library(Simdec)
 First the simulated `inputs` and the `output` need to be specified. They can result from a Monte Carlo simulation arranged directly in matlab, or conducted elsewhere and then loaded through a file, like in this example. Lets use the example data that will come with the R package.  
 
 ```
-data(example_data)
-output    <- example_data[,1]
-inputs    <- example_data[,2:5] 
+rm(list=ls())                                                                             # Clearing the environment
+library(Simdec)                                                                           # Loading Simdec
+data(example_data)                                                                        # Loading the example data
+output <- example_data[,1]                                                                # Defining the output variable
+inputs <- example_data[,2:5]                                                              # Definging the input Variables
 ```
 
 ### Compute sensitivity indices
 Function `sensitivity_indices` computes first-order effects `FOE` (main individual effect of every input variable), second-order effects `SOE` (interaction effects between pairs of variables and combined sensitivity indices `SI`. 
 
 ```
-sig <- sensitivity_indices(output, inputs)
-SI  <- sig[[2]] # Saving SI as a separate for later use
-FOE <- sig[[3]]
-SOE <- sig[[4]]
-print(SI)
-print(FOE)
-print(FOE)
+sen    <- sensitivity_indices(output, inputs)                                             # Storing results in an object can "sen"
+SI     <- sen$SI                                                                          # Extracting/saving calculated sensitivity indices
+print(SI)                                                                                 # Viewing calculated sensitivity indices
+print(sen$FOE)                                                                            # Viewing calculated first order effects
+print(sen$FOE)                                                                            # Viewing calculated second order effects
 ```
 
 Here is the result it returns:
@@ -74,113 +74,65 @@ SOE =
 
 Each value shows what portion of the variance of the output is explained (negative SOE values indicate correlation). In this example, SI shows that the most significant inputs are X2 (52%) and X4 (35%). SOE points out that there is interaction between X2 and X3 (11%) and correlation between X2 and X3 (-6%).
 
-### Run decomposition
-Function `decomposition` chooses the most important input variables, breaks them down into states, forms scenarios out of all combinations of those states and maps the scenarios onto the output values.
-
-```
-# Initialize decomposition
-dec_limit       <-  0.8 # cummulative sensitivity threshold; % (used to decide how many variables to take for decomposition)
-threshold_type  <-  2   # 1 for 'percentile-based' (same amount of observations in each state), 2 for 'interval-based' (equaly-spaced ranges)
-output_name     <-  colnames(example_data[,1])
-var_names       <-  colnames(inputs)
-dec             <-  decomposition(output, inputs, SI, dec_limit = 0.8,
-                                  manual_vars = NULL, manual_thresholds = NULL,
-                                  manual_states = NULL, threshold_type = 2,
-                                  var_names = colnames(inputs))
-scenario        <- dec[[1]]
-scenario_legend <- dec[[2]]
-var_names_dec   <- dec[[4]]
-print(SI)
-print(scenario_legend)
-print(var_names_dec)
-```
-
-And this returns: 
-
-scenario_legend
-     
-     1    1    1  11.19251 282.0775 460.0744 0.1932
-     2    1    2  67.53142 407.7922 622.3533 0.1247
-     3    1    3 237.13240 541.3223 819.4127 0.2556
-     4    2    1 350.30101 434.8982 523.8420 0.0863
-     5    2    2 398.42255 485.7198 650.9752 0.0561
-     6    2    3 414.20952 534.1939 814.4319 0.1122
-     7    3    1 630.23618 703.9046 794.8068 0.0553
-     8    3    2 656.33806 725.1508 816.4755 0.0372
-     9    3    3 668.50405 755.6516 850.9973 0.0794
-
-
-
-var_names_dec
-
-    "X2" "X4"
-
 ### Visualize
-The SimDec graph and the corresponding legend is created with the function `simdec_visualization`.
+
+Function simdec_visualization.R
+
+1. Chooses the most important input variables
+2. Breaks them down into states
+3. Forms scenarios out of all combinations of those states
+4. Maps the scenarios onto the output values
+5. Visualizes these scenarios by color-coding the distribution of the output.
 
 ```
-# Initializing plot for automatic aesthetics
-axistitle   <- c()
-main_colors <- c()
-visuals     <- simdec_visualization(output, scenario, scenario_legend,
-                                  main_colors, axistitle, var_names_dec)
-SimDec_Plot  <- visuals[[1]]
-Legend_Table <- visuals[[2]]
-print(SimDec_Plot)
-print(Legend_Table)
+auto_vis    <- simdec_visualization(output, inputs, SI)                                   # Storing results in an object calls "auto_vis"
+auto_vis$simdec_plot                                                                      # Viewing the plot
+auto_vis$legend_table                                                                     # Viewing the legend table
 ```
-
-And this returns: 
 
 ![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/49cd157d-f4d3-4402-8dba-c444d4a108cf)
 
 
 ![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/91ba105a-f57b-4ff0-93e1-094404bf8e1f)
 
+That's it, your SimDec analysis is completed!
 
+But you can customize it furhter.
+
+And feel free to go an extra step in your reporting, - name the states (i.e., low, medium, high) and merge the cells of the legend with the same state. The help to make those automatic in would be greatly approeciated!
 
 ### Customize
-There are a number of ways to customize the visuals. One can choose different input variables for decomposition, predefine the number of states and specific numeric threshold, and most importantly, change the colors. Here is an example of all of those.
+
+The simdec_visualization.m function has numerious optional arguments that can be used to polish the outlook of the results, tune and play with the decomposition set-up.
 
 ### Here is how you can create a custom decomposition
 
 ```
-data(example_data)
-output            <- example_data[,1]
-inputs            <- example_data[,2:5]
-manual_vars       <- c(0, 2, 1, 0)  # Specify the order of variables for decomposition, use 0 to exclude
-                                    # Size: (1, N_inputs)
-                                    # In this example, we set that the third input variable is used first, and then the second one.
+order_of_variables_m   <- c(0, 2, 1, 0)                                                   # Specifying the order of variables for decomposition,
+                                                                                          # use 0 to exclude. In this example, we set that the
+                                                                                          # third input variable to be used first, and then
+                                                                                          # the second variable.
 
-manual_states     <- c(0, 3, 2, 0)  # Specify the number of states for each variable
-                                    # Size: (1, N_inputs)
-                                    # The position corresponds to the original order of inputs
+number_of_states_m     <- c(0, 3, 2, 0)                                                   # Specifying the number of states for each variable. The
+                                                                                          # position corresponds to the original order of inputs.
 
-manual_thresholds <- matrix(c(NA, min(inputs[,2]), min(inputs[,3]), NA,
-                              NA, 100, 657.5, NA,
-                              NA, 650, max(inputs[,3]), NA,
-                              NA, max(inputs[,2]), NA, NA),
-                              nrow = max(manual_states)+1,
-                              ncol = length(manual_vars),
-                              byrow = TRUE)  # Specify numeric thresholds for every state # Size: (max(manual_states)+1, N_inputs)
-main_colors       <- c('#8c5eff', '#ffe252', '#0dd189')
-sig               <- sensitivity_indices(output, inputs)
-SI                <- sig[[2]] 
-dec               <-  decomposition(output, inputs, SI, dec_limit = 0.8,
-                                    manual_vars = manual_vars,
-                                    manual_thresholds = manual_thresholds,
-                                    manual_states = manual_states,
-                                    threshold_type = 2,
-                                    var_names = colnames(inputs))
-scenario          <- dec[[1]]
-scenario_legend   <- dec[[2]]
-var_names_dec     <- dec[[4]]
-visuals           <- simdec_visualization(output, scenario, scenario_legend,
-                                        main_colors, axistitle, var_names_dec)
-SimDec_Plot   <- visuals[[1]]
-Legend_Table <- visuals[[2]]
-print(SimDec_Plot)
-print(Legend_Table)
+state_boundaries_m     <- matrix(c(NA, min(inputs[,2]), min(inputs[,3]),                  # Specifying numeric thresholds for every state
+                                   NA, NA, 100, 657.5, NA,  
+                                   NA, 650, max(inputs[,3]),
+                                   NA, NA, max(inputs[,2]), NA, NA),
+                                 nrow = max(number_of_states_m)+1,
+                                 ncol = length(order_of_variables_m),
+                                 byrow = TRUE)  
+
+main_colors_m          <- c('#8c5eff', '#ffe252', '#0dd189')                              # Specifying the main colors to be used
+
+custom_vis             <- simdec_visualization(output, inputs, SI,                        # Storing the results in an object called "custom_vis"
+                                               order_of_variables = order_of_variables_m,
+                                               number_of_states   = number_of_states_m,
+                                               state_boundaries   = state_boundaries_m,
+                                               main_colors        = main_colors_m)
+custom_vis$simdec_plot                                                                    # Viewing the plot
+custom_vis$legend_table                                                                   # viewing the legend table
 ```
 
 And this returns: 
@@ -189,15 +141,6 @@ And this returns:
 
 
 ![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/4db4425d-39b3-47b6-a1b6-546dfce07e09)
-
-
-## Code structure
-Each block in Figure below is a matlab function. The green ones are higher-level functions that are called in the main script (i.e. example above).
-
-
-![scheme](https://user-images.githubusercontent.com/37065157/234074889-719ea46b-f542-4ef5-8709-542747fc17c1.png)
-
-
 
 See our [publications](https://www.simdec.fi/publications) and join our
 [discord community](https://discord.gg/54SFcNsZS4).
@@ -214,13 +157,13 @@ Foundation, and Finnish Foundation for Economic Education.
 If you use SimDec in your research we would appreciate a citation to the
 following publications:
 
-- Kozlova, M., & Yeomans, J. S. (2022). Monte Carlo Enhancement via Simulation
-  Decomposition: A “Must-Have” Inclusion for Many Disciplines. _INFORMS
-  Transactions on Education, 22_(3), 147-159. DOI:10.1287/ited.2019.0240.
-- Kozlova, M., Moss, R. J., Yeomans, J. S., & Caers, J. (forthcoming).
-  Uncovering Heterogeneous Effects in Computational Models for Sustainable
-  Decision-making. _Environmental Modelling & Software_.
-- Kozlova, M., Moss, R. J., Roy, P., Alam, A., & Yeomans, J. S. (forthcoming).
-  SimDec algorithm. In M. Kozlova & J. S. Yeomans (Eds.), _Sensitivity Analysis
-  for Business, Technology, and Policymaking Made Easy with Simulation
-  Decomposition_. Routledge.
+- Kozlova, M., & Yeomans, J. S. (2022). Monte Carlo Enhancement via Simulation Decomposition:
+  A “Must-Have” Inclusion for Many Disciplines. INFORMS Transactions on Education, 22(3), 147-159. Available here.
+
+- Kozlova, M., Moss, R. J., Yeomans, J. S., & Caers, J. (2024). Uncovering Heterogeneous Effects in Computational
+  Models for Sustainable Decision-making. Environmental Modelling & Software, 171, 105898.
+  [https://doi.org/10.1016/j.envsoft.2023.105898](https://doi.org/10.1016/j.envsoft.2023.105898)
+
+- Kozlova, M., Moss, R. J., Roy, P., Alam, A., & Yeomans, J. S. (forthcoming). SimDec algorithm and guidelines
+  for its usage and interpretation. In M. Kozlova & J. S. Yeomans (Eds.), Sensitivity Analysis for Business,
+  Technology, and Policymaking. Made Easy with Simulation Decomposition. Routledge.
