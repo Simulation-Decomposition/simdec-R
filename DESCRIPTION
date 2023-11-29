@@ -1,4 +1,4 @@
-Package: Simdec
+Package: SimDec
 Type: Package
 Title: Simulation Decomposition Tool for Sensitivity Analysis
 Version: 0.1.0
