@@ -23,7 +23,7 @@ SimDec reveals the nature of causalities and interaction effects in the model. L
 # install.packages("devtools")
 library(devtools)
 install_github("Simulation-Decomposition/simdec-R")
-library(Simdec)
+library(SimDec)
 ```
 
 ### Load data 
