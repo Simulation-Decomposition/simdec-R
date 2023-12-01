@@ -95,7 +95,7 @@ auto_vis$legend_table                                                           
 
 ![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/91ba105a-f57b-4ff0-93e1-094404bf8e1f)
 
-That's it, your SimDec analysis is completed!
+That's it, your SimDec analysis is now complete!
 
 But you can customize it furhter.
 
