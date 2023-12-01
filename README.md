@@ -34,7 +34,7 @@ rm(list=ls())                                                                   
 library(Simdec)                                                                           # Loading Simdec
 data(example_data)                                                                        # Loading the example data
 output <- example_data[,1]                                                                # Defining the output variable
-inputs <- example_data[,2:5]                                                              # Definging the input Variables
+inputs <- example_data[,2:5]                                                              # Defining the input Variables
 ```
 
 ### Compute sensitivity indices
