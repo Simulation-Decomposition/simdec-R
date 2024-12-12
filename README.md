@@ -31,10 +31,10 @@ First the simulated `inputs` and the `output` need to be specified. They can res
 
 ```
 rm(list=ls())                                                                             # Clearing the environment
-library(Simdec)                                                                           # Loading Simdec
+library(SimDec)                                                                           # Loading Simdec
 data(example_data)                                                                        # Loading the example data
 output <- example_data[,1]                                                                # Defining the output variable
-inputs <- example_data[,2:5]                                                              # Defining the input Variables
+inputs <- example_data[,2:5]                                                              # Definging the input Variables
 ```
 
 ### Compute sensitivity indices
@@ -95,7 +95,7 @@ auto_vis$legend_table                                                           
 
 ![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/91ba105a-f57b-4ff0-93e1-094404bf8e1f)
 
-That's it, your SimDec analysis is now complete!
+That's it, your SimDec analysis is completed!
 
 But you can customize it furhter.
 
@@ -157,9 +157,13 @@ Foundation, and Finnish Foundation for Economic Education.
 If you use SimDec in your research we would appreciate a citation to the
 following publications:
 
+- Kozlova, M., & Yeomans, J. S. (2022). Monte Carlo Enhancement via Simulation Decomposition:
+  A “Must-Have” Inclusion for Many Disciplines. INFORMS Transactions on Education, 22(3), 147-159. Available here.
 
 - Kozlova, M., Moss, R. J., Yeomans, J. S., & Caers, J. (2024). Uncovering Heterogeneous Effects in Computational
   Models for Sustainable Decision-making. Environmental Modelling & Software, 171, 105898.
   [https://doi.org/10.1016/j.envsoft.2023.105898](https://doi.org/10.1016/j.envsoft.2023.105898)
 
-- Kozlova, M., Moss, R. J., Roy, P., Alam, A., & Yeomans, J. S. (2024). SimDec algorithm and guidelines for its usage and interpretation. In M. Kozlova & J. S. Yeomans (Eds.), _Sensitivity Analysis for Business, Technology, and Policymaking. Made Easy with Simulation Decomposition_. Routledge. [Available here](https://doi.org/10.4324/9781003453789-3).
+- Kozlova, M., Moss, R. J., Roy, P., Alam, A., & Yeomans, J. S. (forthcoming). SimDec algorithm and guidelines
+  for its usage and interpretation. In M. Kozlova & J. S. Yeomans (Eds.), Sensitivity Analysis for Business,
+  Technology, and Policymaking. Made Easy with Simulation Decomposition. Routledge.
