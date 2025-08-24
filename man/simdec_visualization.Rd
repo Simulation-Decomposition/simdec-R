@@ -6,8 +6,9 @@
 \usage{
 simdec_visualization(
   output,
-  input,
+  inputs,
   SI,
+  output_2 = NULL,
   decomposition_limit = 0.8 * (sum(SI)),
   order_of_variables = NULL,
   number_of_states = NULL,
@@ -15,13 +16,23 @@ simdec_visualization(
   boundary_type = 2,
   input_names = NULL,
   main_colors = NULL,
-  axistitle = NULL
+  axistitle = NULL,
+  plot_type = "Stacked_Histogram",
+  Scatter_Fraction = 1,
+  XLim = NULL,
+  YLim = NULL,
+  XLim2 = NULL,
+  YLim2 = NULL
 )
 }
 \arguments{
 \item{output}{- an array of Y values.}
 
+\item{inputs}{- a two dimensional array of input variables (Xs).}
+
 \item{SI}{- sensitivity indices.}
+
+\item{output_2}{- a second array of another output variable, NULL by default.}
 
 \item{decomposition_limit}{- (optional) threshold of cumulative importance (sum(SI))
 for selection of input variables for decomposition.}
@@ -54,7 +65,21 @@ states for the first in decomposition (or the most
 influential input variable). For example,
 main_colors <- c('#00B0F0', '#1FDF4D', '#1FDF4D')}
 
-\item{inputs}{- a two dimensional array of input variables (Xs).}
+\item{plot_type}{- "Stacked_Histogram by default, "Boxplot" as an alternative.}
+
+\item{Scatter_Fraction}{- the proportion of data/ points displayed on the scatter plot.
+the default is 1 - the entire data is displayed in the plot.
+A value of e.g. 0.5 will show every second point.}
+
+\item{XLim}{- Minimum and maximum values for x axis c(min, max).}
+
+\item{YLim}{- Minimum and maximum values for y axis c(min, max).
+If option "Boxplot" is chosen, then YLim is ignored.}
+
+\item{XLim2}{- Minimum and maximum values for x axis of the second histogram.
+This scales the scatter plot (YLim) accordingly.}
+
+\item{YLim2}{- Maximim and minimum valyues for the y-axis of the second histogram.}
 
 \item{axis_title}{- (optional) a title for the x axis.}
 }
@@ -107,4 +132,24 @@ manual                    <- simdec_visualization(output, inputs, SI,
 vis_manual                <- manual$simdec_plot
 legend_manual             <- manual$legend_table
 
+# Boxplot example
+rm(list = ls())
+
+data(example_data_2)
+output_1       <- example_data_2[, 1]
+output_2       <- example_data_2[, 2]
+inputs         <- example_data_2[, 3:10]
+
+sen            <- sensitivity_indices(output_1, inputs)
+SI             <- sen$SI
+
+simdec_boxplot <- simdec_visualization(output_1, inputs, SI, plot_type = "Boxplot")
+simdec_boxplot$box_plot
+simdec_boxplot$legend_table
+
+# Two output plot
+
+outputs_plot   <- simdec_visualization(output_1, inputs, SI, output_2 = output_2)
+outputs_plot$scatter_hist
+outputs_plot$legend_table
 }
