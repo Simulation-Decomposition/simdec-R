@@ -29,24 +29,6 @@ the model. Lets have a look at how it works in R!
 devtools::install_github("Simulation-Decomposition/simdec-R")
 ```
 
-    ── R CMD build ─────────────────────────────────────────────────────────────────
-             checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpghwoNq\remotes3bd017e862e6\Simulation-Decomposition-simdec-R-dc0e2a5/DESCRIPTION' ...  ✔  checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpghwoNq\remotes3bd017e862e6\Simulation-Decomposition-simdec-R-dc0e2a5/DESCRIPTION'
-          ─  preparing 'SimDec':
-       checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
-          ─  excluding invalid files
-       Subdirectory 'man' contains invalid file names:
-         'figuresunnamed-chunk-6-1.png' 'figuresunnamed-chunk-7-1.png'
-         'figuresunnamed-chunk-8-1.png'
-          ─  checking for LF line-endings in source and make files and shell scripts
-      ─  checking for empty or unneeded directories
-         NB: this package now depends on R (>=        NB: this package now depends on R (>= 3.5.0)
-           WARNING: Added dependency on R >= 3.5.0 because serialized objects in
-         serialize/load version 3 cannot be read in older versions of R.
-         File(s) containing such objects:
-           'SimDec/data/example_data_2.rda'
-      ─  building 'SimDec_0.1.0.tar.gz'
-         
-
 ### Loading Data
 
 First the simulated ‘inputs’ and the ‘output’ need to be specified. They
@@ -56,6 +38,7 @@ example. Lets use the the first example data that comes with the R
 package.
 
 ``` r
+library(SimDec)
 data(example_data)                                              
 output <- example_data[,1]                                      
 inputs <- example_data[,2:5]                                    
@@ -71,26 +54,26 @@ indices `SI`.
 ``` r
 sen    <- sensitivity_indices(output, inputs)     
 SI     <- sen$SI                                  
-print(round(SI, 4))                                         
+print(SI)                                         
 ```
 
-    [1] 0.0409 0.5155 0.0955 0.3506
+    [1] 0.04086515 0.51550451 0.09554875 0.35061248
 
 ``` r
-print(round(sen$FOE, 4))                                    
+print(sen$FOE)                                    
 ```
 
-    [1] 0.0367 0.4911 0.1069 0.2778
+    [1] 0.0366771 0.4910688 0.1068750 0.2777653
 
 ``` r
-print(round(sen$SOE, 4))                                    
+print(sen$SOE)                                    
 ```
 
-         [,1]   [,2]    [,3]   [,4]
-    [1,]    0 0.0034  0.0015 0.0035
-    [2,]    0 0.0000 -0.0605 0.1059
-    [3,]    0 0.0000  0.0000 0.0363
-    [4,]    0 0.0000  0.0000 0.0000
+         [,1]        [,2]         [,3]        [,4]
+    [1,]    0 0.003428407  0.001484804 0.003462889
+    [2,]    0 0.000000000 -0.060462825 0.105905875
+    [3,]    0 0.000000000  0.000000000 0.036325580
+    [4,]    0 0.000000000  0.000000000 0.000000000
 
 Each value shows what portion of the variance of the output is explained
 (negative SOE values indicate correlation). In this example, SI shows
@@ -116,7 +99,7 @@ auto_vis    <- simdec_visualization(output, inputs, SI)
 print(auto_vis$simdec_plot)
 ```
 
-<img src="man/figuresunnamed-chunk-6-1.png" width="100%" />
+<img src="man/figuresunnamed-chunk-5-1.png" width="100%" />
 
 ``` r
 #auto_vis$legend_table                                 # un-comment and run
@@ -170,7 +153,7 @@ custom_vis             <- simdec_visualization(output, inputs, SI,              
 print(custom_vis$simdec_plot)                                                             # Viewing the plot
 ```
 
-<img src="man/figuresunnamed-chunk-7-1.png" width="100%" />
+<img src="man/figuresunnamed-chunk-6-1.png" width="100%" />
 
 ``` r
 #custom_vis$legend_table                                                                  # un-comment and run
@@ -191,7 +174,7 @@ vis_boxplot <- simdec_visualization(output, inputs, SI, plot_type = "Boxplot")
 print(vis_boxplot$box_plot)
 ```
 
-<img src="man/figuresunnamed-chunk-8-1.png" width="100%" />
+<img src="man/figuresunnamed-chunk-7-1.png" width="100%" />
 
 ``` r
 # vis_boxplot$legend_table                           # un-comment and run

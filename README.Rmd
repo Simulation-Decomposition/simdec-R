@@ -40,20 +40,12 @@ This library is under active development and things can change at anytime! Sugge
 devtools::install_github("Simulation-Decomposition/simdec-R")
 ```
 
-```{r, include = FALSE, echo = FALSE}
-# Guard so knitting doesn’t crash if SimDec isn’t installed yet
-if (!requireNamespace("SimDec", quietly = TRUE)) {
-  stop("SimDec is not installed. Run the install chunk once, then knit again.")
-} else {
-  library(SimDec)
-}
-```
-
 ### Loading Data
 
 First the simulated 'inputs' and the 'output' need to be specified. They can result from a Monte Carlo simulation arranged directly in R, or conducted elsewhere and then loaded through a file, like in this example. Lets use the the first example data that comes with the R package.
 
 ```{r}
+library(SimDec)
 data(example_data)                                              
 output <- example_data[,1]                                      
 inputs <- example_data[,2:5]                                    
@@ -63,12 +55,12 @@ inputs <- example_data[,2:5]
 
 Function `sensitivity_indices` computes first-order effects `FOE` (main individual effect of every input variable), second-order effects `SOE` (interaction effects between pairs of variables and combined sensitivity indices `SI`.
 
-```{r, include = TRUE}
+```{r}
 sen    <- sensitivity_indices(output, inputs)     
 SI     <- sen$SI                                  
-print(round(SI, 4))                                         
-print(round(sen$FOE, 4))                                    
-print(round(sen$SOE, 4))                                    
+print(SI)                                         
+print(sen$FOE)                                    
+print(sen$SOE)                                    
 ```
 Each value shows what portion of the variance of the output is explained (negative SOE values indicate correlation). In this example, SI shows that the most significant inputs are X2 (52%) and X4 (35%). SOE points out that there is interaction between X2 and X3 (11%) and correlation between X2 and X3 (-6%).
 
