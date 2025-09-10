@@ -29,6 +29,24 @@ the model. Lets have a look at how it works in R!
 devtools::install_github("Simulation-Decomposition/simdec-R")
 ```
 
+    ── R CMD build ─────────────────────────────────────────────────────────────────
+             checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpSc0x36\remotes82f02c08527\Simulation-Decomposition-simdec-R-8aa4a97/DESCRIPTION' ...  ✔  checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpSc0x36\remotes82f02c08527\Simulation-Decomposition-simdec-R-8aa4a97/DESCRIPTION' (354ms)
+          ─  preparing 'SimDec':
+       checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
+          ─  excluding invalid files
+       Subdirectory 'man' contains invalid file names:
+         'figuresunnamed-chunk-6-1.png' 'figuresunnamed-chunk-7-1.png'
+         'figuresunnamed-chunk-8-1.png'
+          ─  checking for LF line-endings in source and make files and shell scripts
+      ─  checking for empty or unneeded directories
+         NB: this package now depends on R (>=        NB: this package now depends on R (>= 3.5.0)
+           WARNING: Added dependency on R >= 3.5.0 because serialized objects in
+         serialize/load version 3 cannot be read in older versions of R.
+         File(s) containing such objects:
+           'SimDec/data/example_data_2.rda'
+      ─  building 'SimDec_0.1.0.tar.gz'
+         
+
 ### Loading Data
 
 First the simulated ‘inputs’ and the ‘output’ need to be specified. They
@@ -268,3 +286,34 @@ both ‘XLim’ and ‘XLim2’ should be specified.
 <p align="center">
 <img src="man/figures/custom_scatterhist_2.png"  />
 </p>
+
+<https://github.com/Simulation-Decomposition/simdec-R>
+
+### Links
+
+- See how to read SimDec on wikipedia:
+  <https://en.wikipedia.org/wiki/Simulation_decomposition>
+- Meet people behind SimDec: <https://www.simdec.fi/team>
+- Stay in touch via our Sensitivity Analysis discord community:
+  <https://discord.com/invite/54SFcNsZS4>
+
+### Citations
+
+The algorithms and visualizations used in this package came primarily
+out of research at LUT University, Lappeenranta, Finland, and Stanford
+University, California, U.S., supported with grants from Business
+Finland, Wihuri Foundation, Foundation for Economic Education, and
+Natural Sciences and Engineering Research Council. If you use SimDec in
+your research we would appreciate a citation to the following
+publications:
+
+- Kozlova, M., Moss, R. J., Yeomans, J. S., & Caers, J. (2024).
+  Uncovering Heterogeneous Effects in Computational Models for
+  Sustainable Decision-making. Environmental Modelling & Software,
+  171, 105898. <https://doi.org/10.1016/j.envsoft.2023.105898>
+
+- Kozlova, M., Moss, R. J., Roy, P., Alam, A., & Yeomans, J. S. (2024).
+  SimDec algorithm and guidelines for its usage and interpretation.
+  In M. Kozlova & J. S. Yeomans (Eds.), Sensitivity Analysis for
+  Business, Technology, and Policymaking. Made Easy with Simulation
+  Decomposition. Routledge.<https://doi.org/10.4324/9781003453789-3>

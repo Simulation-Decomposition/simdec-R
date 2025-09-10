@@ -224,3 +224,21 @@ If the full control over the both axes of the scatterplot is needed, both 'XLim'
   <img src="man/figures/custom_scatterhist_2.png"  />
 </p>
 
+<https://github.com/Simulation-Decomposition/simdec-R>
+
+### Links
+
+* See how to read SimDec on wikipedia: <https://en.wikipedia.org/wiki/Simulation_decomposition>
+* Meet people behind SimDec: <https://www.simdec.fi/team>
+* Stay in touch via our Sensitivity Analysis discord community: <https://discord.com/invite/54SFcNsZS4>
+
+### Citations
+
+The algorithms and visualizations used in this package came primarily out of research at LUT University, Lappeenranta, Finland, and Stanford University, California, U.S., supported with grants from Business Finland, Wihuri Foundation, Foundation for Economic Education, and Natural Sciences and Engineering Research Council. If you use SimDec in your research we would appreciate a citation to the following publications: 
+
+* Kozlova, M., Moss, R. J., Yeomans, J. S., & Caers, J. (2024). Uncovering Heterogeneous Effects in Computational Models for Sustainable Decision-making. Environmental Modelling & Software, 171, 105898. <https://doi.org/10.1016/j.envsoft.2023.105898>
+
+* Kozlova, M., Moss, R. J., Roy, P., Alam, A., & Yeomans, J. S. (2024). SimDec algorithm and guidelines for its usage and interpretation. In M. Kozlova & J. S. Yeomans (Eds.), Sensitivity Analysis for Business, Technology, and Policymaking. Made Easy with Simulation Decomposition. Routledge.<https://doi.org/10.4324/9781003453789-3>
+
+
+
