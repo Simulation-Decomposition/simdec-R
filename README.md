@@ -30,7 +30,7 @@ devtools::install_github("Simulation-Decomposition/simdec-R")
 ```
 
     ── R CMD build ─────────────────────────────────────────────────────────────────
-             checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpSc0x36\remotes82f02c08527\Simulation-Decomposition-simdec-R-8aa4a97/DESCRIPTION' ...  ✔  checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpSc0x36\remotes82f02c08527\Simulation-Decomposition-simdec-R-8aa4a97/DESCRIPTION' (354ms)
+             checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpghwoNq\remotes3bd017e862e6\Simulation-Decomposition-simdec-R-dc0e2a5/DESCRIPTION' ...  ✔  checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpghwoNq\remotes3bd017e862e6\Simulation-Decomposition-simdec-R-dc0e2a5/DESCRIPTION'
           ─  preparing 'SimDec':
        checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
           ─  excluding invalid files
@@ -286,8 +286,6 @@ both ‘XLim’ and ‘XLim2’ should be specified.
 <p align="center">
 <img src="man/figures/custom_scatterhist_2.png"  />
 </p>
-
-<https://github.com/Simulation-Decomposition/simdec-R>
 
 ### Links
 

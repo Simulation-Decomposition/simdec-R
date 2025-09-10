@@ -4,7 +4,7 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r, include = FALSE, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment  = NA,
@@ -224,7 +224,6 @@ If the full control over the both axes of the scatterplot is needed, both 'XLim'
   <img src="man/figures/custom_scatterhist_2.png"  />
 </p>
 
-<https://github.com/Simulation-Decomposition/simdec-R>
 
 ### Links
 
