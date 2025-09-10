@@ -1,113 +1,145 @@
-> **Warning**
-> This library is under active development and things can change at anytime! Suggestions and help are greatly appreciated.
 
-![image](https://user-images.githubusercontent.com/37065157/233836694-5312496e-4ada-47cb-bc09-3bf8c00be135.png)
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<!---
-When public
-![image](https://raw.githubusercontent.com/Simulation-Decomposition/simdec-python/main/docs/_static/simdec_presentation.png)
--->
+**Warning**
 
-**Simulation decomposition** or **SimDec** is an uncertainty and sensitivity
-analysis method, which is based on Monte Carlo simulation. SimDec consists of
-three major parts:
+This library is under active development and things can change at
+anytime! Suggestions and help are greatly appreciated.
 
-1. computing sensitivity indices,
-2. creating multi-variable scenarios and mapping the output values to them, and
-3. visualizing the scenarios on the output distribution by color-coding its segments.
+# SimDec
 
-SimDec reveals the nature of causalities and interaction effects in the model. Lets have a look at how it works in R!
-### Installing the package from Github
+![](man/figures/logo.png)
 
-```
-# install.packages("devtools")
-library(devtools)
-install_github("Simulation-Decomposition/simdec-R")
-library(SimDec)
-```
+**Simulation decomposition** or **SimDec** is an uncertainty and
+sensitivity analysis method, which is based on Monte Carlo simulation.
+SimDec consists of three major parts:
 
-### Load data 
-First the simulated `inputs` and the `output` need to be specified. They can result from a Monte Carlo simulation arranged directly in matlab, or conducted elsewhere and then loaded through a file, like in this example. Lets use the example data that will come with the R package.  
+1.  computing sensitivity indices,
+2.  creating multi-variable scenarios and mapping the output values to
+    them, and
+3.  visualizing the scenarios on the output distribution by color-coding
+    its segments.
 
-```
-rm(list=ls())                                                                             # Clearing the environment
-library(SimDec)                                                                           # Loading Simdec
-data(example_data)                                                                        # Loading the example data
-output <- example_data[,1]                                                                # Defining the output variable
-inputs <- example_data[,2:5]                                                              # Definging the input Variables
+**SimDec** reveals the nature of causalities and interaction effects in
+the model. Lets have a look at how it works in R!
+
+### Installation
+
+``` r
+devtools::install_github("Simulation-Decomposition/simdec-R")
 ```
 
-### Compute sensitivity indices
-Function `sensitivity_indices` computes first-order effects `FOE` (main individual effect of every input variable), second-order effects `SOE` (interaction effects between pairs of variables and combined sensitivity indices `SI`. 
+    ── R CMD build ─────────────────────────────────────────────────────────────────
+             checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpmQPXHc\remotes12a430d62650\Simulation-Decomposition-simdec-R-cd66c8c/DESCRIPTION' ...  ✔  checking for file 'C:\Users\abidn\AppData\Local\Temp\RtmpmQPXHc\remotes12a430d62650\Simulation-Decomposition-simdec-R-cd66c8c/DESCRIPTION'
+          ─  preparing 'SimDec':
+       checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
+          ─  checking for LF line-endings in source and make files and shell scripts
+          ─  checking for empty or unneeded directories
+         NB: this package now depends on R (>=        NB: this package now depends on R (>= 3.5.0)
+           WARNING: Added dependency on R >= 3.5.0 because serialized objects in
+         serialize/load version 3 cannot be read in older versions of R.
+         File(s) containing such objects:
+           'SimDec/data/example_data_2.rda'
+       building 'SimDec_0.1.0.tar.gz'  ─  building 'SimDec_0.1.0.tar.gz'
+         
 
+### Loading Data
+
+First the simulated ‘inputs’ and the ‘output’ need to be specified. They
+can result from a Monte Carlo simulation arranged directly in R, or
+conducted elsewhere and then loaded through a file, like in this
+example. Lets use the the first example data that comes with the R
+package.
+
+``` r
+data(example_data)                                              
+output <- example_data[,1]                                      
+inputs <- example_data[,2:5]                                    
 ```
-sen    <- sensitivity_indices(output, inputs)                                             # Storing results in an object can "sen"
-SI     <- sen$SI                                                                          # Extracting/saving calculated sensitivity indices
-print(SI)                                                                                 # Viewing calculated sensitivity indices
-print(sen$FOE)                                                                            # Viewing calculated first order effects
-print(sen$FOE)                                                                            # Viewing calculated second order effects
+
+### Compute Sensitivity Indices
+
+Function `sensitivity_indices` computes first-order effects `FOE` (main
+individual effect of every input variable), second-order effects `SOE`
+(interaction effects between pairs of variables and combined sensitivity
+indices `SI`.
+
+``` r
+sen    <- sensitivity_indices(output, inputs)     
+SI     <- sen$SI                                  
+print(round(SI, 4))                                         
 ```
 
-Here is the result it returns:
+    [1] 0.0409 0.5155 0.0955 0.3506
 
-SI =
+``` r
+print(round(sen$FOE, 4))                                    
+```
 
-    0.0409
-    0.5155
-    0.0955
-    0.3506
+    [1] 0.0367 0.4911 0.1069 0.2778
 
-FOE =
+``` r
+print(round(sen$SOE, 4))                                    
+```
 
-    0.0367
-    0.4910
-    0.1069
-    0.2777
+         [,1]   [,2]    [,3]   [,4]
+    [1,]    0 0.0034  0.0015 0.0035
+    [2,]    0 0.0000 -0.0605 0.1059
+    [3,]    0 0.0000  0.0000 0.0363
+    [4,]    0 0.0000  0.0000 0.0000
 
-SOE =
-
-         0    0.0034    0.0015    0.0035
-         0         0   -0.0605    0.1059
-         0         0         0    0.0363
-         0         0         0         0
-
-
-Each value shows what portion of the variance of the output is explained (negative SOE values indicate correlation). In this example, SI shows that the most significant inputs are X2 (52%) and X4 (35%). SOE points out that there is interaction between X2 and X3 (11%) and correlation between X2 and X3 (-6%).
+Each value shows what portion of the variance of the output is explained
+(negative SOE values indicate correlation). In this example, SI shows
+that the most significant inputs are X2 (52%) and X4 (35%). SOE points
+out that there is interaction between X2 and X3 (11%) and correlation
+between X2 and X3 (-6%).
 
 ### Visualize
 
-Function simdec_visualization.R
+The function ‘simdec_visualization’
 
-1. Chooses the most important input variables
-2. Breaks them down into states
-3. Forms scenarios out of all combinations of those states
-4. Maps the scenarios onto the output values
-5. Visualizes these scenarios by color-coding the distribution of the output.
+1.  Chooses the most important input variables
+2.  Breaks them down into states
+3.  Forms scenarios out of all combinations of those states
+4.  Maps the scenarios onto the output values
+5.  Visualizes these scenarios by color-coding the distribution of the
+    output.
 
+#### Default Visualization (One-Output Stacked Histogram)
+
+``` r
+auto_vis    <- simdec_visualization(output, inputs, SI)
+print(auto_vis$simdec_plot)
 ```
-auto_vis    <- simdec_visualization(output, inputs, SI)                                   # Storing results in an object calls "auto_vis"
-auto_vis$simdec_plot                                                                      # Viewing the plot
-auto_vis$legend_table                                                                     # Viewing the legend table
+
+<img src="man/figuresunnamed-chunk-6-1.png" width="100%" />
+
+``` r
+#auto_vis$legend_table                                 # un-comment and run
 ```
 
-![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/49cd157d-f4d3-4402-8dba-c444d4a108cf)
+<p align="center">
+<img src="man/figures/auto_vis_legend_table.png" width="600" />
+</p>
 
+That’s it, your ‘SimDec’ analysis is completed!
 
-![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/91ba105a-f57b-4ff0-93e1-094404bf8e1f)
+But you can customize it further.
 
-That's it, your SimDec analysis is completed!
+And feel free to go an extra step in your reporting, - name the states
+(i.e., low, medium, high) and merge the cells of the legend with the
+same state. The help to make those automatic in would be greatly
+appreciated!
 
-But you can customize it furhter.
+#### Custom Visualization (One-Output Stacked Histogram)
 
-And feel free to go an extra step in your reporting, - name the states (i.e., low, medium, high) and merge the cells of the legend with the same state. The help to make those automatic in would be greatly approeciated!
+The ‘simdec_visualization’ function has numerous optional arguments that
+can be used to polish the outlook of the results, tune and play with the
+decomposition set-up.
 
-### Customize
+Here is how you can create a custom decomposition
 
-The simdec_visualization.m function has numerious optional arguments that can be used to polish the outlook of the results, tune and play with the decomposition set-up.
-
-### Here is how you can create a custom decomposition
-
-```
+``` r
 order_of_variables_m   <- c(0, 2, 1, 0)                                                   # Specifying the order of variables for decomposition,
                                                                                           # use 0 to exclude. In this example, we set that the
                                                                                           # third input variable to be used first, and then
@@ -131,39 +163,122 @@ custom_vis             <- simdec_visualization(output, inputs, SI,              
                                                number_of_states   = number_of_states_m,
                                                state_boundaries   = state_boundaries_m,
                                                main_colors        = main_colors_m)
-custom_vis$simdec_plot                                                                    # Viewing the plot
-custom_vis$legend_table                                                                   # viewing the legend table
+print(custom_vis$simdec_plot)                                                             # Viewing the plot
 ```
 
-And this returns: 
+<img src="man/figuresunnamed-chunk-7-1.png" width="100%" />
 
-![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/f2a834b2-0949-4234-bad4-b9235142bf18)
+``` r
+#custom_vis$legend_table                                                                  # un-comment and run
+```
 
+<p align="center">
+<img src="man/figures/custom_vis_legend_table.png" width="600" />
+</p>
 
-![image](https://github.com/Simulation-Decomposition/simdec-R/assets/131595527/4db4425d-39b3-47b6-a1b6-546dfce07e09)
+#### Boxplot
 
-See our [publications](https://www.simdec.fi/publications) and join our
-[discord community](https://discord.gg/54SFcNsZS4).
+Adding option plot_type = “Boxplot” in the ‘simdec_visualization’
+function displays the results in the form of boxplot instead of stacked
+histogram.
 
-...
+``` r
+vis_boxplot <- simdec_visualization(output, inputs, SI, plot_type = "Boxplot")
+print(vis_boxplot$box_plot)
+```
 
-## Citations
+<img src="man/figuresunnamed-chunk-8-1.png" width="100%" />
 
-The algorithms and visualizations used in this package came primarily out of
-research at LUT University, Lappeenranta, Finland, and Stanford University,
-California, U.S., supported with grants from Business Finland, Wihuri
-Foundation, and Finnish Foundation for Economic Education.
+``` r
+# vis_boxplot$legend_table                           # un-comment and run
+```
 
-If you use SimDec in your research we would appreciate a citation to the
-following publications:
+<p align="center">
+<img src="man/figures/boxplot_legend.png" width="600" />
+</p>
 
-- Kozlova, M., & Yeomans, J. S. (2022). Monte Carlo Enhancement via Simulation Decomposition:
-  A “Must-Have” Inclusion for Many Disciplines. INFORMS Transactions on Education, 22(3), 147-159. Available here.
+The boxplot visualization presents exactly the same decomposition and
+contains the same scenarios, color-coded in the same way as in the
+stacked histogram.
 
-- Kozlova, M., Moss, R. J., Yeomans, J. S., & Caers, J. (2024). Uncovering Heterogeneous Effects in Computational
-  Models for Sustainable Decision-making. Environmental Modelling & Software, 171, 105898.
-  [https://doi.org/10.1016/j.envsoft.2023.105898](https://doi.org/10.1016/j.envsoft.2023.105898)
+A boxplot is handy when some scenarios have little data and are poorly
+visible on the histogram.
 
-- Kozlova, M., Moss, R. J., Roy, P., Alam, A., & Yeomans, J. S. (forthcoming). SimDec algorithm and guidelines
-  for its usage and interpretation. In M. Kozlova & J. S. Yeomans (Eds.), Sensitivity Analysis for Business,
-  Technology, and Policymaking. Made Easy with Simulation Decomposition. Routledge.
+#### Two-Output Scatterhist
+
+If relationship between two output variables is in question, the
+‘simdec_visualization’ function can build a scatter plot with two
+corresponding histograms on the top and right side, all decomposed and
+colored by the logic created for the main output variable.
+
+To create the scatterhist one needs to specify the second output
+variable for the argument ‘otput_2’, additional optional arguments
+include ‘Scatter_Fraction’, which defines how many dots are shown on the
+scatter plot (1 - all, 0.5 - every second). For other optional arguments
+run ‘?simdec_visualization’.
+
+``` r
+data("example_data_2")
+output_1        <- example_data_2[, 1]
+output_2        <- example_data_2[, 2]
+inputs          <- example_data_2[, 3:10]
+sen    <- sensitivity_indices(output, inputs)     
+SI     <- sen$SI
+
+# un-comment and run 
+
+# vis_scatterhist <- simdec_visualization(output_1, inputs, SI, output_2, Scatter_Fraction = 0.005)
+# vis_scatterhist$scatter_hist
+# vis_scatterhist$legend_table
+```
+
+<p align="center">
+<img src="man/figures/scatterhist.png" width="1000" />
+</p>
+<p align="center">
+<img src="man/figures/scatterhist_legend.png" width="600" />
+</p>
+
+We can change x- and y-axes limits for both histograms, the scatter plot
+scales accordingly.
+
+``` r
+# custom_scatterhist <- simdec_visualization(output   = output_1,
+#                                            inputs   = inputs,
+#                                            SI       = SI,
+#                                            output_2 = output_2,
+#                                            XLim     = c(1000, 3000),
+#                                            YLim     = c(0, 4), 
+#                                            Scatter_Fraction = 0.005)
+# custom_scatterhist$scatter_hist            # un-comment and run 
+```
+
+<p align="center">
+<img src="man/figures/custom_scatterhist.png" />
+</p>
+
+(The graph demonstrates that not only Output1 axis has been changed as
+specified in the code above (scatter plot x-axis), but the second
+histogram has been automatically truncated as well (x-axis of the
+rotated right histogram and the corresponding y-axis of the scatter
+plot) to avoid empty space in the scatter plot.)
+
+If the full control over the both axes of the scatterplot is needed,
+both ‘XLim’ and ‘XLim2’ should be specified.
+
+``` r
+# un-comment and run
+
+# custom_scatterhist_2 <- simdec_visualization(output   = output_1,
+#                                              inputs   = inputs,
+#                                              SI       = SI,
+#                                              output_2 = output_2,
+#                                              XLim     = c(1000, 3000),
+#                                              XLim2     = c(0, 1000),
+#                                              Scatter_Fraction = 0.005)
+# custom_scatterhist_2$scatter_hist
+```
+
+<p align="center">
+<img src="man/figures/custom_scatterhist_2.png"  />
+</p>
