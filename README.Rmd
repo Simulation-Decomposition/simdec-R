@@ -91,10 +91,6 @@ print(auto_vis$simdec_plot)
 ```
 
 <p align="center">
-  <img src="man/figures/auto_vis_plot.png" />
-</p>
-
-<p align="center">
   <img src="man/figures/auto_vis_legend_table.png" width="600" />
 </p>
 
@@ -137,11 +133,6 @@ custom_vis             <- simdec_visualization(output, inputs, SI,              
 print(custom_vis$simdec_plot)                                                             # Viewing the plot
 #custom_vis$legend_table                                                                  # un-comment and run
 ```
-
-<p align="center">
-  <img src="man/figures/manual_vis_plot.png" />
-</p>
-
 <p align="center">
   <img src="man/figures/custom_vis_legend_table.png" width="600" />
 </p>
@@ -155,10 +146,6 @@ vis_boxplot <- simdec_visualization(output, inputs, SI, plot_type = "Boxplot")
 print(vis_boxplot$box_plot)
 # vis_boxplot$legend_table                           # un-comment and run
 ```
-
-<p align="center">
-  <img src="man/figures/boxplot.png" />
-</p>
 
 <p align="center">
   <img src="man/figures/boxplot_legend.png" width="600" />

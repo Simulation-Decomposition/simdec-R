@@ -29,20 +29,6 @@ the model. Lets have a look at how it works in R!
 devtools::install_github("Simulation-Decomposition/simdec-R")
 ```
 
-    ── R CMD build ─────────────────────────────────────────────────────────────────
-             checking for file 'C:\Users\abidn\AppData\Local\Temp\Rtmp2BOX52\remotesbe812a1329b\Simulation-Decomposition-simdec-R-b2daab7/DESCRIPTION' ...  ✔  checking for file 'C:\Users\abidn\AppData\Local\Temp\Rtmp2BOX52\remotesbe812a1329b\Simulation-Decomposition-simdec-R-b2daab7/DESCRIPTION' (355ms)
-          ─  preparing 'SimDec':
-       checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
-          ─  checking for LF line-endings in source and make files and shell scripts
-      ─  checking for empty or unneeded directories
-         NB: this package now depends on R (>=        NB: this package now depends on R (>= 3.5.0)
-           WARNING: Added dependency on R >= 3.5.0 because serialized objects in
-         serialize/load version 3 cannot be read in older versions of R.
-         File(s) containing such objects:
-           'SimDec/data/example_data_2.rda'
-      ─  building 'SimDec_0.1.0.tar.gz'
-         
-
 ### Loading Data
 
 First the simulated ‘inputs’ and the ‘output’ need to be specified. They
@@ -119,9 +105,6 @@ print(auto_vis$simdec_plot)
 ```
 
 <p align="center">
-<img src="man/figures/auto_vis_plot.png" />
-</p>
-<p align="center">
 <img src="man/figures/auto_vis_legend_table.png" width="600" />
 </p>
 
@@ -176,9 +159,6 @@ print(custom_vis$simdec_plot)                                                   
 ```
 
 <p align="center">
-<img src="man/figures/manual_vis_plot.png" />
-</p>
-<p align="center">
 <img src="man/figures/custom_vis_legend_table.png" width="600" />
 </p>
 
@@ -199,9 +179,6 @@ print(vis_boxplot$box_plot)
 # vis_boxplot$legend_table                           # un-comment and run
 ```
 
-<p align="center">
-<img src="man/figures/boxplot.png" />
-</p>
 <p align="center">
 <img src="man/figures/boxplot_legend.png" width="600" />
 </p>
