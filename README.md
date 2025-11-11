@@ -297,4 +297,4 @@ publications:
   SimDec algorithm and guidelines for its usage and interpretation.
   In M. Kozlova & J. S. Yeomans (Eds.), Sensitivity Analysis for
   Business, Technology, and Policymaking. Made Easy with Simulation
-  Decomposition. Routledge.<https://doi.org/10.4324/9781003453789-3>
+  Decomposition. Routledge. [Available here](https://github.com/Simulation-Decomposition/SimDec-book/blob/74ce72c1d3dda650eba1c59e3b215a4bb35c6be0/chapters/02_SimDec_algorithm_and_instructions/Ch2.pdf).
