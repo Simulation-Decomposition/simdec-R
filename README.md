@@ -1,11 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-**Warning**
-
-This library is under active development and things can change at
-anytime! Suggestions and help are greatly appreciated.
-
 # SimDec
 
 ![](man/figures/logo.png)
